@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Pedro Antonio Mayorgas Parejo & Adrián Acosa Sánchez">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <meta name="theme-color" content="#712cf9">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <header class="p-3 bg-dark text-white">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <img src="assets/brand.png" class="bi me-2" role="img"/>
+                </a>
+    
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                {% if user.rol == "Visitante" %}
+                    <li><a href="index.php" class="nav-link px-2 text-white">Inicio</a></li>
+                {% endif %}
+                {% if user.rol == "Usuario" or user.rol == "Administrador" %}
+                    <li><a href="/model/listas.php" class="nav-link px-2 text-white">Mis listas</a></li>
+                    <li><a href="/model/petition.php" class="nav-link px-2 text-white">Modificar mis datos</a></li>
+                {% endif %}
+                {% if user.rol == "Administrador" %}
+                    <li><a href="/model/usuarios.php" class="nav-link px-2 text-white">Lista de usuarios</a></li>
+                {% endif %}
+                </ul>
+                <div class="text-end">
+                {% if user.rol == "Visitante" %}
+                    <a class="btn btn-outline-light me-2" href="model/login.php" role="button">Iniciar sesión</a>
+                    <a class="btn btn-primary" href="petition.php" role="button">Registrarse</a>
+                {% else %}
+                    <form action="index.php" method="POST">
+                        <input class="btn btn-outline-danger me-2" type="submit" value="Cerrar sesión" name="sesion" role="button">
+                    </form>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Inicio</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Mis listas</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Modificar mis datos</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+            </ul>
+            <p class="text-center text-muted">&copy; 2022 Pedro Antonio Mayorgas Parejo / Adrián Acosa Sánchez</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</body>
+</html>

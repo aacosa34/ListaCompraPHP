@@ -1,0 +1,32 @@
+{% extends "padre.html" %}
+
+    {% block title %}
+        Inicio
+    {% endblock %}
+
+    {% block main %}
+    <div class="container px-4 py-5" id="icon-grid">
+        <h2 class="pb-2 text-center border-bottom">Estadísticas de uso</h2>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+        {% for i in estadisticas %}
+            <div class="col d-flex align-items-start">
+                <div>
+                    <h4 class="fw-bold mb-0">{{ i.nombre }}</h4>
+                    <p>{{ i.cantidad }}</p>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="col d-flex align-items-start">
+            <div>
+                <h4 class="fw-bold mb-0">Histórico de productos comprados</h4>
+                <ul>
+                {% for p in productos_comprados %}
+                    <li>{{ p.nombre }} ({{ p.cantidad }})</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
