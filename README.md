@@ -14,3 +14,4 @@ Donde el archivo llamado `composer.json` contiene lo siguiente:
 	}
 	}
 
+NOTA: Las vistas en vez de almacenarlas en el directorio `view` las almaceno en templates porque asi lo requiere twig.
