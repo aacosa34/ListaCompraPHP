@@ -1,33 +1,30 @@
 <?php
 require_once "../vendor/autoload.php";
-include("bd.php");
+include_once "../controller/bd.php";
 
 $loader = new \Twig\Loader\FilesystemLoader('../view');
 $twig = new \Twig\Environment($loader);
 
-$error = "";
-
-if(isset($_SESSION['idusuario'])){
-    header("Location: index.php");
-}
+$error = $clase = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $error = comprobarLogin($_POST['email'], $_POST['password']);
-    
-    if(!$error){
+    // $error = comprobarLogin($_POST['email'], $_POST['password']);
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $resultado = comprobarLogin($email, $password);
+
+    if(!$resultado){
+        $clase = 'is-invalid';
+        $error = 'Email o contraseña incorrectos';
+    }else{
         session_start();
 
         $_SESSION['email'] = $email;
 
         header("Location: /index.php");
     }
-    else{
-        header("Location: login.php");
-    }
-
-    exit();
 }
 
-echo $twig->render('login.html', ['error' => $error]);
+echo $twig->render('login.html', ['clase' => $clase, 'error' => $error]);
 
 ?>

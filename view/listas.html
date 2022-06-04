@@ -1,0 +1,51 @@
+{% extends "padre.html" %}
+
+    {% block title %}
+        Listas
+    {% endblock %}
+
+    {% block main %}
+
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Mis listas</h1>
+            <p>Mostrar listas en las que:</p>
+            <form action="listas.php" method="GET">
+              <div class="input-group mb-3 justify-content-center">
+                <div class="form-check form-switch mx-3">
+                  <input class="form-check-input" type="checkbox" id="propietario"/>
+                  <label class="form-check-label" for="propietario">Soy propietario</label>
+                </div>
+                <div class="form-check form-switch mx-3">
+                  <input class="form-check-input" type="checkbox" id="editar"/>
+                  <label class="form-check-label " for="editar">Puedo editar</label>
+                </div>
+                <div class="form-check form-switch mx-3">
+                  <input class="form-check-input" type="checkbox" id="ver"/>
+                  <label class="form-check-label" for="ver">Puedo ver</label>
+                </div>
+              </div>
+              <div class="form-floating m-3">
+                <input type="text" class="form-control" id="filtro" placeholder="Indique nombre o descripción"/>
+                <label for="filtro">Indique nombre o descripción</label>
+              </div>
+              <p>Ordenar:</p>
+              <div class="input-group mb-3 justify-content-center">
+                <div class="form-check mx-3">
+                  <input class="form-check-input" name="ordenar" type="radio" id="alfabeto"/>
+                  <label class="form-check-label " for="alfabeto">Alfabéticamente</label>
+                </div>
+                <div class="form-check mx-3">
+                  <input class="form-check-input" name="ordenar" type="radio" id="fechaCreacion"/>
+                  <label class="form-check-label" for="fechaCreacion">Por fecha de creacion descendente</label>
+                </div>
+              </div>
+            </form>
+            <p><a href="" class="btn btn-primary mt-2">Mostrar</a></p>
+          </div>
+        </div>
+      </section>
+      
+
+    {% endblock %}

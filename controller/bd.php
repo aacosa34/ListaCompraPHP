@@ -13,20 +13,20 @@ function getConnection(){
       }
 }
 
-function getUser($iduser){
+function getUserByEmail($email){
     global $conn;
     getConnection();
 
-    $query = $conn->prepare("SELECT * FROM USUARIOS WHERE IDUSUARIO=?");
-    $query->bind_param("i", $iduser);
+    $query = $conn->prepare("SELECT * FROM USUARIOS WHERE EMAIL=?");
+    $query->bind_param("i", $email);
     $query->execute();
 
     $resultQuery = $query->get_result();
 
+    $usuario = "HOLA";
+
     if($resultQuery->num_rows>0){
         $usuario = $resultQuery->fetch_all(MYSQLI_ASSOC);
-    }else{
-        $usuario = 0;
     }
 
     return $usuario;
@@ -73,12 +73,12 @@ function comprobarLogin($email, $password){
     $resultQuery = $query->get_result();
 
     if ($resultQuery->num_rows > 0) {
-      $usuario = $resultQuery->fetch_assoc(MYSQLI_ASSOC);
+      $usuario = $resultQuery->fetch_assoc();
     }
 
     // Si hemos encontrado un usuario, desencriptamos y comprobamos la contrasenia
     if(!empty($usuario)){
-        if(password_verify($password, $usuario['PASSWORD'])){
+        if($password == $usuario['PASSWORD']){
             return true;
         }
     }
