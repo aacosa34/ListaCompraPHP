@@ -12,14 +12,12 @@
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                 <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <img src="assets/brand.png" class="bi me-2" role="img"/>
+                    <img src="/assets/brand.png" class="bi me-2" role="img"/>
                 </a>
     
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                {% if user.rol == "Visitante" %}
                     <li><a href="index.php" class="nav-link px-2 text-white">Inicio</a></li>
-                {% endif %}
                 {% if user.rol == "Usuario" or user.rol == "Administrador" %}
                     <li><a href="/model/listas.php" class="nav-link px-2 text-white">Mis listas</a></li>
                     <li><a href="/model/petition.php" class="nav-link px-2 text-white">Modificar mis datos</a></li>
@@ -29,7 +27,7 @@
                 {% endif %}
                 </ul>
                 <div class="text-end">
-                {% if user.rol == "Visitante" %}
+                {% if user.rol != "Administrador" and user.rol != "Usuario" %}
                     <a class="btn btn-outline-light me-2" href="model/login.php" role="button">Iniciar sesión</a>
                     <a class="btn btn-primary" href="petition.php" role="button">Registrarse</a>
                 {% else %}

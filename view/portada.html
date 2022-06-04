@@ -12,8 +12,8 @@
         {% for i in estadisticas %}
             <div class="col d-flex align-items-start">
                 <div>
-                    <h4 class="fw-bold mb-0">{{ i.nombre }}</h4>
-                    <p>{{ i.cantidad }}</p>
+                    <h4 class="fw-bold mb-0">{{ i.NOMBRE }}</h4>
+                    <p>{{ i.CANTIDAD }}</p>
                 </div>
             </div>
         {% endfor %}
@@ -23,7 +23,7 @@
                 <h4 class="fw-bold mb-0">Histórico de productos comprados</h4>
                 <ul>
                 {% for p in productos_comprados %}
-                    <li>{{ p.nombre }} ({{ p.cantidad }})</li>
+                    <li>{{ p.NOMBRE }} ({{ p.CANTIDAD }})</li>
                 {% endfor %}
                 </ul>
             </div>
