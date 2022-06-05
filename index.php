@@ -1,6 +1,6 @@
 <?php
 require_once "vendor/autoload.php";
-include("model/bd.php");
+include_once "controller/bd.php";
 
 $loader = new \Twig\Loader\FilesystemLoader('view');
 $twig = new \Twig\Environment($loader);
@@ -22,6 +22,6 @@ if(isset($_SESSION['email'])){
 
 echo $twig->render('portada.html', ['estadisticas' => $estadisticas,
                                     'productos_comprados' => $productos,
-                                    'user' => $user[0]]);
+                                    'user' => $user]);
 
 ?>

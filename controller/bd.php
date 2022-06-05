@@ -23,10 +23,8 @@ function getUserByEmail($email){
 
     $resultQuery = $query->get_result();
 
-    $usuario = "HOLA";
-
     if($resultQuery->num_rows>0){
-        $usuario = $resultQuery->fetch_all(MYSQLI_ASSOC);
+        $usuario = $resultQuery->fetch_assoc();
     }
 
     return $usuario;
@@ -76,7 +74,7 @@ function comprobarLogin($email, $password){
       $usuario = $resultQuery->fetch_assoc();
     }
 
-    // Si hemos encontrado un usuario, desencriptamos y comprobamos la contrasenia
+    // Si hemos encontrado un usuario, comprobamos la contrasenia
     if(!empty($usuario)){
         if($password == $usuario['PASSWORD']){
             return true;
@@ -86,6 +84,22 @@ function comprobarLogin($email, $password){
     return false;
 }
 
+function getListas($idusuario){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("SELECT L.IDLISTA,NOMBRE,PRIVILEGIOS,IMGBINARY,IMGTYPE FROM LISTA AS L INNER JOIN GRUPOS AS G WHERE G.IDLISTA=L.IDLISTA AND IDUSUARIO=?");
+    $query->bind_param('i', $idusuario);
+    $query->execute();
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows > 0){
+        $listas = $resultQuery->fetch_all(MYSQLI_ASSOC);
+    }
+
+    return $listas;
+
+}
 
 
 ?>

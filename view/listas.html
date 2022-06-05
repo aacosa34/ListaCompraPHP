@@ -5,8 +5,7 @@
     {% endblock %}
 
     {% block main %}
-
-    <section class="py-5 text-center container">
+      <section class="py-5 text-center container">
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light">Mis listas</h1>
@@ -14,38 +13,64 @@
             <form action="listas.php" method="GET">
               <div class="input-group mb-3 justify-content-center">
                 <div class="form-check form-switch mx-3">
-                  <input class="form-check-input" type="checkbox" id="propietario"/>
+                  <input class="form-check-input" type="checkbox" name="propietario" id="propietario" {{ filtros.propietario ? 'checked' : ''}}/>
                   <label class="form-check-label" for="propietario">Soy propietario</label>
                 </div>
                 <div class="form-check form-switch mx-3">
-                  <input class="form-check-input" type="checkbox" id="editar"/>
+                  <input class="form-check-input" type="checkbox" name="editable" id="editar" {{ filtros.editable ? 'checked' : ''}}/>
                   <label class="form-check-label " for="editar">Puedo editar</label>
                 </div>
                 <div class="form-check form-switch mx-3">
-                  <input class="form-check-input" type="checkbox" id="ver"/>
+                  <input class="form-check-input" type="checkbox" name="visible" id="ver" {{ filtros.visible ? 'checked' : ''}}/>
                   <label class="form-check-label" for="ver">Puedo ver</label>
                 </div>
               </div>
               <div class="form-floating m-3">
-                <input type="text" class="form-control" id="filtro" placeholder="Indique nombre o descripción"/>
+                <input type="text" class="form-control" name="texto" id="filtro" value="{{filtros.texto}}" placeholder="Indique nombre o descripción"/>
                 <label for="filtro">Indique nombre o descripción</label>
               </div>
               <p>Ordenar:</p>
               <div class="input-group mb-3 justify-content-center">
                 <div class="form-check mx-3">
-                  <input class="form-check-input" name="ordenar" type="radio" id="alfabeto"/>
+                  <input class="form-check-input" name="orden" value="alfabeto" type="radio" id="alfabeto" {{filtros.orden=="alfabeto" ? 'checked' : ''}}/>
                   <label class="form-check-label " for="alfabeto">Alfabéticamente</label>
                 </div>
                 <div class="form-check mx-3">
-                  <input class="form-check-input" name="ordenar" type="radio" id="fechaCreacion"/>
+                  <input class="form-check-input" name="orden" value="fecha" type="radio" id="fechaCreacion" {{filtros.orden=="fecha" ? 'checked' : ''}}/>
                   <label class="form-check-label" for="fechaCreacion">Por fecha de creacion descendente</label>
                 </div>
               </div>
+              <input type="submit" class="btn btn-primary mt-2" id="filtrar" value="Mostrar"/>
             </form>
-            <p><a href="" class="btn btn-primary mt-2">Mostrar</a></p>
+            
           </div>
         </div>
       </section>
-      
 
+      <div class="album py-5">
+        <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          {% for i in listas %}
+            <div class="col">
+              <div class="card shadow-sm">
+                <img src="/assets/noimage.png" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img">
+                <div class="card-body">
+                  <p class="card-text">{{i.NOMBRE}}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+
+                      <a href="/model/vista_lista.php?idlista={{i.IDLISTA}}" class="btn btn-sm btn-outline-primary">Ver</a>
+                      {% if i.PRIVILEGIOS == 'Editor' %}
+                        <a href="/model/borrar_lista.php?idlista={{i.IDLISTA}}" class="btn btn-sm btn-outline-danger">Borrar</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+          </div>
+        </div>
+      </div>
+    
     {% endblock %}
