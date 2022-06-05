@@ -31,8 +31,9 @@ if(isset($_SESSION['idusuario'])){
             $privilegio[] = 3;
         }
 
-        // OBTENER EL TAMANIO TOTAL 
+        // OBTENER EL TAMANIO TOTAL FUNCTION
         
+
         // alfabeto - Ordeno por nombre de lista
         // fecha - ordeno por fecha de creacion en orden descendiente
         if ($_GET["orden"] == "alfabeto" && !isset($_GET["texto"])){
