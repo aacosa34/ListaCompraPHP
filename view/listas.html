@@ -9,6 +9,8 @@
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light">Mis listas</h1>
+            <!-- CREAR MAS TARDE -->
+            <a href="/model/crearlista_form.php" class="btn btn-success m-2">Crear una lista</a>
             <p>Mostrar listas en las que:</p>
             <form action="listas.php" method="GET">
               <div class="input-group mb-3 justify-content-center">
@@ -42,7 +44,6 @@
               </div>
               <input type="submit" class="btn btn-primary mt-2" id="filtrar" value="Mostrar"/>
             </form>
-            
           </div>
         </div>
       </section>
@@ -50,18 +51,19 @@
       <div class="album py-5">
         <div class="container">
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-          {% for i in listas %}
+          {% if listas|length > 0 %}
+          {% for i in range(0,(listas|length)-1) %}
             <div class="col">
               <div class="card shadow-sm">
-                <img src="/assets/noimage.png" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img">
+                <img src="{{src[i]}}" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img">
                 <div class="card-body">
-                  <p class="card-text">{{i.NOMBRE}}</p>
+                  <p class="card-text">{{listas[i].NOMBRE}}</p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
 
-                      <a href="/model/vista_lista.php?idlista={{i.IDLISTA}}" class="btn btn-sm btn-outline-primary">Ver</a>
-                      {% if i.PRIVILEGIOS == 'Editor' %}
-                        <a href="/model/borrar_lista.php?idlista={{i.IDLISTA}}" class="btn btn-sm btn-outline-danger">Borrar</a>
+                      <a href="/model/vista_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-primary">Ver</a>
+                      {% if listas[i].PRIVILEGIOS == 'Propietario' %}
+                        <a href="/model/borrar_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-danger">Borrar</a>
                       {% endif %}
                     </div>
                   </div>
@@ -69,8 +71,29 @@
               </div>
             </div>
           {% endfor %}
+          {% endif %}
           </div>
         </div>
       </div>
+
+      <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item{{ pagina == 1 ? ' disabled' : ''}}">
+                <a class="page-link " href="/model/usuarios.php?pagina=1">&laquo;</a>
+            </li>
+
+            <li class="page-item{{ pagina-1 < 1 or pagina == 1 ? ' disabled' : ''}}">
+                <a class="page-link" href="/model/usuarios.php?pagina={{ pagina-1 }}">Anterior</a>
+            </li>
+
+            <li class="page-item{{ pagina+1 > ultima or pagina == ultima ? ' disabled' : ''}}">
+                <a class="page-link" href="/model/usuarios.php?pagina={{ pagina+1 }}">Siguiente</a>
+            </li>
+
+            <li class="page-item{{ pagina == ultima ? ' disabled' : ''}}">
+                <a class="page-link" href="/model/usuarios.php?pagina={{ ultima }}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
     
     {% endblock %}

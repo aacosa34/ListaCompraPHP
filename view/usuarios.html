@@ -1,0 +1,58 @@
+{% extends "padre.html" %}
+
+    {% block title %}
+        Gestión de usuarios
+    {% endblock %}
+
+    {% block main %}
+
+    <div class="p-5 text-center bg-light">
+        <h1 class="my-4">Gestión de usuarios</h1>
+        <h4 class="my-4">Listado de todos los usuarios registrados</h4>
+    </div>
+
+    <div class="list-group w-auto m-5">
+    {% for usuario in listado %}
+        <div class="list-group-item d-flex align-items-center gap-3 py-3">
+            <img src="{{usuario.foto}}" alt="Imagen de usuario" width="32" height="32" class="rounded flex-shrink-0">
+            <div class="col">
+                <div class="d-flex gap-2 w-100 justify-content-between">
+                    <div>
+                        <h6 class="mb-0">{{usuario.NOMBRE}}</h6>
+                        <p class="mb-0 opacity-75">{{usuario.EMAIL}}</p>
+                    </div>
+                    <strong class="text-nowrap">{{usuario.ROL}}</strong>
+                    <small class="opacity-50 text-nowrap">{{usuario.ESTADO}}</small>
+                </div>
+            </div>
+            <div class="col text-end">
+            {% if usuario.ESTADO == "Inactivo" %}
+                <a class="m-1 btn btn-primary" href="/model/validar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Validar</a>
+            {% endif %}    
+                <a class="m-1 btn btn-danger" href="/model/borrar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Borrar</a>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item{{ pagina == 1 ? ' disabled' : ''}}">
+                <a class="page-link " href="/model/usuarios.php?pagina=1">&laquo;</a>
+            </li>
+
+            <li class="page-item{{ pagina-1 < 1 or pagina == 1 ? ' disabled' : ''}}">
+                <a class="page-link" href="/model/usuarios.php?pagina={{ pagina-1 }}">Anterior</a>
+            </li>
+
+            <li class="page-item{{ pagina+1 > ultima or pagina == ultima ? ' disabled' : ''}}">
+                <a class="page-link" href="/model/usuarios.php?pagina={{ pagina+1 }}">Siguiente</a>
+            </li>
+
+            <li class="page-item{{ pagina == ultima ? ' disabled' : ''}}">
+                <a class="page-link" href="/model/usuarios.php?pagina={{ ultima }}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+
+    {% endblock %}

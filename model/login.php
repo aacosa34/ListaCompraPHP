@@ -11,15 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // $error = comprobarLogin($_POST['email'], $_POST['password']);
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $resultado = comprobarLogin($email, $password);
+    $usuario = comprobarLogin($email, $password);
 
-    if(!$resultado){
+    if(empty($usuario)){
         $clase = 'is-invalid';
         $error = 'Email o contraseña incorrectos';
     }else{
         session_start();
-
-        $_SESSION['email'] = $email;
+        
+        $_SESSION['idusuario'] = $usuario['IDUSUARIO'];
 
         header("Location: /index.php");
     }

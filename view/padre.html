@@ -20,7 +20,7 @@
                     <li><a href="/index.php" class="nav-link px-2 text-white">Inicio</a></li>
                 {% if user.ROL == "Usuario" or user.ROL == "Administrador" %}
                     <li><a href="/model/listas.php" class="nav-link px-2 text-white">Mis listas</a></li>
-                    <li><a href="/model/petition.php" class="nav-link px-2 text-white">Modificar mis datos</a></li>
+                    <li><a href="/model/modificacion_form.php" class="nav-link px-2 text-white">Modificar mis datos</a></li>
                 {% endif %}
                 {% if user.ROL == "Administrador" %}
                     <li><a href="/model/usuarios.php" class="nav-link px-2 text-white">Lista de usuarios</a></li>
@@ -29,7 +29,7 @@
                 <div class="text-end">
                 {% if user.ROL != "Administrador" and user.ROL != "Usuario" %}
                     <a class="btn btn-outline-light me-2" href="/model/login.php" role="button">Iniciar sesión</a>
-                    <a class="btn btn-primary" href="petition.php" role="button">Registrarse</a>
+                    <a class="btn btn-primary" href="/model/registro_form.php" role="button">Registrarse</a>
                 {% else %}
                     <form action="/model/logout.php" method="POST">
                         <input class="btn btn-outline-danger me-2" type="submit" value="Cerrar sesión" name="sesion" role="button">
@@ -46,11 +46,9 @@
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container">
             <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Inicio</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Mis listas</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Modificar mis datos</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Inicio</a></li>
+                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Mis listas</a></li>
+                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Modificar mis datos</a></li>
             </ul>
             <p class="text-center text-muted">&copy; 2022 Pedro Antonio Mayorgas Parejo / Adrián Acosa Sánchez</p>
         </div>

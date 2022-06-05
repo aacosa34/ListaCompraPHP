@@ -1,0 +1,89 @@
+{% extends "padre.html" %}
+
+    {% block title %}
+        Ver {{lista.NOMBRE}}
+    {% endblock %}
+
+    {% block main %}
+        <div class="row">
+            <div class="col-md-4  m-4 text-center">
+                <img src="" class="rounded img-thumbnail" alt="Foto de la lista"/>
+            </div>
+            <div class="col-md-6 p-5 text-center">
+                <h1 class="fw-bold my-4"></h1>
+                <h4 class="my-4"></h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container col-md-8">
+            {% if privilegios == "Editor" or privilegios == "Propietario" %}
+                <div class="card shadow bg-light mx-5 my-2">
+                    <h4 class="m-4">Añadir producto a la lista:</h4>
+                    <form class="row g-3 mx-4">
+                        <div class="col-md-4">
+                            <input class="form-control mb-4" type="text" id="nomProducto" placeholder="Nombre del producto"/>
+                        </div> 
+                        <div class="col-md-2 ms-3">
+                            <input class="form-control mb-4" type="text" id="cantProducto" placeholder="Cantidad"/>
+                        </div>
+                        <div class="col-auto">
+                            <input class="btn btn-primary mx-2 mb-4" type="submit" name="boton" value="Añadir"/>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+                <div class="card shadow mx-5 my-2">
+                    <table class="table">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col">Modificaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                        {% for i in productos %}
+                            <tr>
+                                <td>{{i.NOMBRE|title}}</td>
+                                <td>{{i.CANTIDAD}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary">Modificar</button>
+                                    <button type="button" class="btn btn-sm btn-outline-success">Comprado</button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger">Borrar</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="container col-md-4">
+                <div class="card shadow me-5 my-2 bg-light">
+                    <div class="card-header">
+                        <h4 class="mt-2">Compartida con:</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <table class="table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>Usuario 1</td>
+                                {% if privilegios == "Propietario" %}
+                                    <td class="text-end"><button type="button" class="btn btn-sm btn-danger ms-4">Borrar</button></td>
+                                {% endif %}
+                                </tr>
+                                <tr>
+                                    <td>Usuario 2</td>
+                                {% if privilegios == "Propietario" %}
+                                    <td class="text-end"><button type="button" class="btn btn-sm btn-danger ms-4">Borrar</button></td>
+                                {% endif %}
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <button type="button" class="btn btn-success text-center mt-4">Añadir usuario</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
