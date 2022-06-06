@@ -475,19 +475,7 @@ function getSizeOfUserPage(){
     return $size;
 }
 
-function insertUser(){
-    global $conn;
-    getConnection();
 
-    $query = $conn -> prepare("INSERT INTO USUARIOS (DNI, NOMBRE, APELLIDOS, TELEFONO, EMAIL, PASSWORD, FNAC, SEXO, ROL, ESTADO, IMGTYPE, IMGBINARY) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-    $query->bind_param('sssssssssssb', $dni, $nombre, $apellidos, $telefono, $email, $password, $fechanac, $sexo, $rol, $estado, $imgtype, $imgbin);
-    $query->execute();
-
-
-    if ($query -> affected_rows != 1){
-        echo "Error en la insercion";
-    }
-}
 
 // funcion que actualiza la columna lastlogin a NOW()
 function loginUser(){
@@ -501,10 +489,10 @@ function getTypeImg($img_name){
     $find_png = strpos($img_name, 'png');
     
     if ($find_jpg !== false){
-        return 'image/jpg';
+        return  'image/jpg';
     }
     else if ($find_jpeg !== false){
-        return 'image/jpeg';
+        return 'image/jpeg'; 
     }
     else if ($find_png !== false){
         return 'image/png';
@@ -515,7 +503,7 @@ function getTypeImg($img_name){
 }
 
 function checkValidImage($validacion){ 
-    if (is_uploaded_file($validacion['foto']['tmp_name']) && !empty(getTypeImg($validacion['foto']['name']))) {
+    if (is_uploaded_file($validacion['tmp_name']) && !empty(getTypeImg($validacion['name']))) {
        // echo "Archivo ". $validacion['foto']['name'] ." subido con exito y formato correcto.\n";
        return true;
      } 
@@ -525,10 +513,93 @@ function checkValidImage($validacion){
      }
 }
 
+
+function formatImageB64($foto){
+    $type = getTypeImg($foto['foto']['name']);
+    
+    return "data:" . $usuarios[$i]['IMGTYPE'] .  ";base64," . base64_encode($usuarios[$i]['IMGBINARY']);
+
+}
+
+function acceptUser($validacion, $idusuario, $rolinsert){
+    // Preparacion de la imagen
+
+    $imgbin = get_contents($validacion['foto']);
+    // Concatenacion de los campos de fechas
+    $birthdate = $validacion['mes'] . "/" . $validacion['dia'] . "/" . $validacion['anyo'];
+        
+    if ($rolinsert == "Administrador"){
+
+     }
+     // Inicio de insercion
+    global $conn;
+    getConnection();
+ 
+    $query = $conn -> prepare("UPDATE USUARIOS SET ROL = ?, ESTADO = ? WHERE IDUSUARIO = ?;");
+    $query->bind_param('ssi', $rol, $estado, $idusuario);
+    $query->execute();
+ 
+ 
+    if ($query -> affected_rows != 1){
+        echo "Error en la insercion";
+    }
+ }
+ function insertUser($validacion, $rolinsert="No"){
+    // Preparacion de la imagen
+    $path = realpath("../assets/tmpusuarios/");
+
+    echo "PATH: " . $path . "\n";
+    $pathname = $path . "/" . $_COOKIE['name'];
+
+    echo $pathname;
+
+    echo " NOMBRE FOTO SESION " . $_COOKIE['name'];
+
+    $imgbin = file_get_contents($pathname);
+    $imgtype = getTypeImg($_COOKIE['name']);
+
+    // Concatenacion de los campos de fechas
+    $date = strtotime($validacion['anyo'] . "-" .  $validacion['mes'] . "-" . $validacion['dia']);
+    $birthdate = date('Y-m-d', $date);
+
+     if ($rolinsert == "Administrador"){
+         $rol = $validacion['rol'];
+         $estado = $validacion['estado'];
+     }else{
+         $rol = "Usuario";
+         $estado = "Inactivo";
+     }
+     // Inicio de insercion
+    global $conn;
+    getConnection();
+      
+    $query = $conn -> prepare("INSERT INTO USUARIOS (DNI, NOMBRE, APELLIDOS, TELEFONO, EMAIL, PASSWORD, FNAC, SEXO, ROL, ESTADO, IMGTYPE, IMGBINARY) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+    $query->bind_param('sssssssssssb', $validacion['dni'], $validacion['nombre'], $validacion['apellido'], $validacion['telefono'], $validacion['email'], $validacion['contrasenia'], $birthdate, $validacion['sexo'], $rol, $estado, $imgtype, $imgbin);
+    $query->send_long_data(11, $imgbin); 
+    $query->execute();
+ 
+ 
+    if ($query -> affected_rows != 1){
+        echo "Error en la insercion";
+    }
+ }
+ 
+
 function checkFormulario($validacion, $foto){
         if(empty($foto) || !checkValidImage($foto)){
             $validacion['errorfoto'] = "Fallo en el archivo subido, foto no subida correctamente o formato invalido: Formatos: aceptados jpg, jpeg, png";
             $validacion['sinerrores'] = false;
+        }else{
+            // Copia de foto a carpeta temporal
+            $filename = $foto["name"];
+            $tempname = $foto["tmp_name"];
+            $folder = realpath("../assets/tmpusuarios/") . "/" . $filename;
+            $folder_relative = "../assets/tmpusuarios/" . $filename;
+            $validacion['foto'] = $folder_relative;
+            
+            if (!move_uploaded_file($tempname, $folder)) {
+                echo "Failed to upload image!";
+            }
         }
     
         if(empty($validacion["nombre"]) || !preg_match('/^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/', $validacion["nombre"])){
@@ -575,7 +646,19 @@ function checkFormulario($validacion, $foto){
           $validacion['errorsexo'] = "Debe seleccionar una opción obligatoriamente";
           $validacion['sinerrores'] = false;
         }
-    
+        
+        if(empty($validacion['dia']) || (!preg_match( '/^[0-9]{1,2}$/', $validacion['dia']) && $validacion['dia'] > 0 && $validacion['dia'] <= 31)) {
+            $validacion['errorfecha'] = "La fecha introducida no es correcta. Compruébela.";
+        }
+
+        if(empty($validacion['mes']) || (!preg_match( '/^[0-9]{1,2}$/', $validacion['mes']) && $validacion['mes'] > 0 && $validacion['mes'] <= 12)) {
+            $validacion['errorfecha'] = "La fecha introducida no es correcta. Compruébela.";
+        } 
+
+        if(empty($validacion['anyo']) || (!preg_match('/^[0-9]{4}$/',$validacion['anyo']) && $validacion['anyo'] > 1900 && $validacion['anyo'] <= 2010)) {
+            $validacion['errorfecha'] = "La fecha introducida no es correcta. Compruébela.";
+        }
+        
         if($validacion["boton"] == "Enviar datos" && !isset($validacion['sinerrores'])){
             $validacion['sinerrores']=true;
         }
