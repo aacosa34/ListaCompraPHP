@@ -15,15 +15,15 @@
             <form action="listas.php" method="GET">
               <div class="input-group mb-3 justify-content-center">
                 <div class="form-check form-switch mx-3">
-                  <input class="form-check-input" type="checkbox" name="propietario" id="propietario" {{ filtros.propietario ? 'checked' : ''}}/>
+                  <input class="form-check-input" type="checkbox" name="propietario" id="propietario" {{ filtros.propietario ? 'checked'}}/>
                   <label class="form-check-label" for="propietario">Soy propietario</label>
                 </div>
                 <div class="form-check form-switch mx-3">
-                  <input class="form-check-input" type="checkbox" name="editable" id="editar" {{ filtros.editable ? 'checked' : ''}}/>
+                  <input class="form-check-input" type="checkbox" name="editable" id="editar" {{ filtros.editable ? 'checked'}}/>
                   <label class="form-check-label " for="editar">Puedo editar</label>
                 </div>
                 <div class="form-check form-switch mx-3">
-                  <input class="form-check-input" type="checkbox" name="visible" id="ver" {{ filtros.visible ? 'checked' : ''}}/>
+                  <input class="form-check-input" type="checkbox" name="visible" id="ver" {{ filtros.visible ? 'checked'}}/>
                   <label class="form-check-label" for="ver">Puedo ver</label>
                 </div>
               </div>
@@ -34,11 +34,11 @@
               <p>Ordenar:</p>
               <div class="input-group mb-3 justify-content-center">
                 <div class="form-check mx-3">
-                  <input class="form-check-input" name="orden" value="alfabeto" type="radio" id="alfabeto" {{filtros.orden=="alfabeto" ? 'checked' : ''}}/>
+                  <input class="form-check-input" name="orden" value="alfabeto" type="radio" id="alfabeto" {{filtros.orden!="fecha" ? 'checked'}}/>
                   <label class="form-check-label " for="alfabeto">Alfabéticamente</label>
                 </div>
                 <div class="form-check mx-3">
-                  <input class="form-check-input" name="orden" value="fecha" type="radio" id="fechaCreacion" {{filtros.orden=="fecha" ? 'checked' : ''}}/>
+                  <input class="form-check-input" name="orden" value="fecha" type="radio" id="fechaCreacion" {{filtros.orden=="fecha" ? 'checked'}}/>
                   <label class="form-check-label" for="fechaCreacion">Por fecha de creacion descendente</label>
                 </div>
               </div>
@@ -78,22 +78,23 @@
 
       <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item{{ pagina == 1 ? ' disabled' : ''}}">
-                <a class="page-link " href="/model/usuarios.php?pagina=1">&laquo;</a>
-            </li>
+          <li class="page-item{{ pagina == 1 ? ' disabled' : ''}}">
+              <a class="page-link " href="/model/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina=1">&laquo;</a>
+          </li>
 
-            <li class="page-item{{ pagina-1 < 1 or pagina == 1 ? ' disabled' : ''}}">
-                <a class="page-link" href="/model/usuarios.php?pagina={{ pagina-1 }}">Anterior</a>
-            </li>
+          <li class="page-item{{ pagina-1 < 1 or pagina == 1 ? ' disabled' : ''}}">
+              <a class="page-link" href="/model/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ pagina-1 }}">Anterior</a>
+          </li>
 
-            <li class="page-item{{ pagina+1 > ultima or pagina == ultima ? ' disabled' : ''}}">
-                <a class="page-link" href="/model/usuarios.php?pagina={{ pagina+1 }}">Siguiente</a>
-            </li>
+          <li class="page-item{{ pagina+1 > ultima or pagina == ultima ? ' disabled' : ''}}">
+              <a class="page-link" href="/model/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ pagina+1 }}">Siguiente</a>
+          </li>
 
-            <li class="page-item{{ pagina == ultima ? ' disabled' : ''}}">
-                <a class="page-link" href="/model/usuarios.php?pagina={{ ultima }}">&raquo;</a>
-            </li>
+          <li class="page-item{{ pagina == ultima ? ' disabled' : ''}}">
+              <a class="page-link" href="/model/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ ultima }}">&raquo;</a>
+          </li>
         </ul>
-    </nav>
+      </nav>
+
     
     {% endblock %}

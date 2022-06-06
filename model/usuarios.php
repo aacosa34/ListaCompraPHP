@@ -20,7 +20,6 @@ if(isset($_SESSION['idusuario'])){
 
         if(isset($_GET['pagina']) && $_SERVER['REQUEST_METHOD'] === 'GET'){
             $pag_actual = $_GET['pagina'];
-            echo "Hola";
         }
         $pagina = getUserPage($pag_actual);
     }
