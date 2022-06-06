@@ -10,7 +10,7 @@
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light">Mis listas</h1>
             <!-- CREAR MAS TARDE -->
-            <a href="/model/crearlista_form.php" class="btn btn-success m-2">Crear una lista</a>
+            <a href="/controller/crearlista_form.php" class="btn btn-success m-2">Crear una lista</a>
             <p>Mostrar listas en las que:</p>
             <form action="listas.php" method="GET">
               <div class="input-group mb-3 justify-content-center">
@@ -61,9 +61,9 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
 
-                      <a href="/model/vista_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-primary">Ver</a>
+                      <a href="/controller/vista_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-primary">Ver</a>
                       {% if listas[i].PRIVILEGIOS == 'Propietario' %}
-                        <a href="/model/borrar_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-danger">Borrar</a>
+                        <a href="/controller/borrar_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-danger">Borrar</a>
                       {% endif %}
                     </div>
                   </div>
@@ -79,19 +79,19 @@
       <nav>
         <ul class="pagination justify-content-center">
           <li class="page-item{{ pagina == 1 ? ' disabled' : ''}}">
-              <a class="page-link " href="/model/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina=1">&laquo;</a>
+              <a class="page-link " href="/controller/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina=1">&laquo;</a>
           </li>
 
           <li class="page-item{{ pagina-1 < 1 or pagina == 1 ? ' disabled' : ''}}">
-              <a class="page-link" href="/model/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ pagina-1 }}">Anterior</a>
+              <a class="page-link" href="/controller/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ pagina-1 }}">Anterior</a>
           </li>
 
           <li class="page-item{{ pagina+1 > ultima or pagina == ultima ? ' disabled' : ''}}">
-              <a class="page-link" href="/model/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ pagina+1 }}">Siguiente</a>
+              <a class="page-link" href="/controller/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ pagina+1 }}">Siguiente</a>
           </li>
 
           <li class="page-item{{ pagina == ultima ? ' disabled' : ''}}">
-              <a class="page-link" href="/model/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ ultima }}">&raquo;</a>
+              <a class="page-link" href="/controller/listas.php?propietario={{filtros.propietario}}&editable={{filtros.editable}}&visible={{filtros.visible}}&texto={{filtros.texto}}&orden={{filtros.orden}}&pagina={{ ultima }}">&raquo;</a>
           </li>
         </ul>
       </nav>

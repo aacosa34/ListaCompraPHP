@@ -32,3 +32,5 @@ SELECT COUNT(IDUSUARIO) FROM USUARIOS WHERE EMAIL = VARIABLEMAILPHP AND PASSWORD
 
 En el 50-server.cnf debemos poner esto para que la BD pueda cargar las fotos y no aparezca como NULL
 secure-file-priv=/var/www/html
+
+SELECT DNI, NOMBRE, APELLIDOS, TELEFONO, EMAIL, PASSWORD, FNAC, SEXO, ROL, ESTADO, ROL FROM USUSARIOS WHERE

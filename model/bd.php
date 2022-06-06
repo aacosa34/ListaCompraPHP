@@ -514,10 +514,10 @@ function checkValidImage($validacion){
 }
 
 
-function formatImageB64($foto){
-    $type = getTypeImg($foto['foto']['name']);
+function formatImageB64($userfoto){
+    // $type = getTypeImg($foto['foto']['name']);
     
-    return "data:" . $usuarios[$i]['IMGTYPE'] .  ";base64," . base64_encode($usuarios[$i]['IMGBINARY']);
+    return "data:" . $userfoto['IMGTYPE'] .  ";base64," . base64_encode($userfoto['IMGBINARY']);
 
 }
 
@@ -548,12 +548,12 @@ function acceptUser($validacion, $idusuario, $rolinsert){
     // Preparacion de la imagen
     $path = realpath("../assets/tmpusuarios/");
 
-    echo "PATH: " . $path . "\n";
+    // echo "PATH: " . $path . "\n";
     $pathname = $path . "/" . $_COOKIE['name'];
 
-    echo $pathname;
+    // echo $pathname;
 
-    echo " NOMBRE FOTO SESION " . $_COOKIE['name'];
+    // echo " NOMBRE FOTO SESION " . $_COOKIE['name'];
 
     $imgbin = file_get_contents($pathname);
     $imgtype = getTypeImg($_COOKIE['name']);
@@ -563,8 +563,8 @@ function acceptUser($validacion, $idusuario, $rolinsert){
     $birthdate = date('Y-m-d', $date);
 
      if ($rolinsert == "Administrador"){
-         $rol = $validacion['rol'];
-         $estado = $validacion['estado'];
+         $rol = $validacion['ROL'];
+         $estado = $validacion['ESTADO'];
      }else{
          $rol = "Usuario";
          $estado = "Inactivo";
@@ -574,7 +574,7 @@ function acceptUser($validacion, $idusuario, $rolinsert){
     getConnection();
       
     $query = $conn -> prepare("INSERT INTO USUARIOS (DNI, NOMBRE, APELLIDOS, TELEFONO, EMAIL, PASSWORD, FNAC, SEXO, ROL, ESTADO, IMGTYPE, IMGBINARY) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-    $query->bind_param('sssssssssssb', $validacion['dni'], $validacion['nombre'], $validacion['apellido'], $validacion['telefono'], $validacion['email'], $validacion['contrasenia'], $birthdate, $validacion['sexo'], $rol, $estado, $imgtype, $imgbin);
+    $query->bind_param('sssssssssssb', $validacion['DNI'], $validacion['NOMBRE'], $validacion['APELLIDOS'], $validacion['TELEFONO'], $validacion['EMAIL'], $validacion['PASSWORD'], $birthdate, $validacion['SEXO'], $rol, $estado, $imgtype, $imgbin);
     $query->send_long_data(11, $imgbin); 
     $query->execute();
  
@@ -582,7 +582,22 @@ function acceptUser($validacion, $idusuario, $rolinsert){
     if ($query -> affected_rows != 1){
         echo "Error en la insercion";
     }
- }
+}
+
+function activateUser($idusuario){
+    global $conn;
+    getConnection();
+
+    $activo = "Activo";
+
+    $query = $conn->prepare("UPDATE USUARIOS SET ESTADO=? WHERE IDUSUARIO=?");
+    $query->bind_param('si', $activo , $idusuario);
+    $query->execute();
+
+    if($query->affected_rows != 1){
+        echo "Error al activar el usuario";
+    }
+}
  
 
 function checkFormulario($validacion, $foto){
@@ -602,47 +617,42 @@ function checkFormulario($validacion, $foto){
             }
         }
     
-        if(empty($validacion["nombre"]) || !preg_match('/^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/', $validacion["nombre"])){
+        if(empty($validacion["NOMBRE"]) || !preg_match('/^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/', $validacion["NOMBRE"])){
             $validacion['errornombre'] = "Debe escribir su Nombre (solo letras)";
             $validacion['sinerrores'] = false;
         }
     
-        if(empty($validacion["apellido"]) || !preg_match('/^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/', $validacion["apellido"])){
+        if(empty($validacion["APELLIDOS"]) || !preg_match('/^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/', $validacion["APELLIDOS"])){
           $validacion['errorapellido'] = "Debe escribir su Apellido (solo letras)";
           $validacion['sinerrores'] = false;
         }
 
-        if(empty($validacion["dni"]) || !preg_match('/^([0-9]{8}[A-Z]{1})$/', $validacion["dni"])){
+        if(empty($validacion["DNI"]) || !preg_match('/^([0-9]{8}[A-Z]{1})$/', $validacion["DNI"])){
             $validacion['errordni'] = "El DNI no es válido";
             $validacion['sinerrores'] = false;
         }
     
-        if(empty($validacion["email"]) || !filter_var($validacion["email"], FILTER_VALIDATE_EMAIL)){
+        if(empty($validacion["EMAIL"]) || !filter_var($validacion["EMAIL"], FILTER_VALIDATE_EMAIL)){
             $validacion['erroremail'] = "Formato de email no valido (formato aceptado: john@example.com)";
             $validacion['sinerrores'] = false;
         }
     
-        if(empty($validacion["email2"]) || $validacion["email2"] != $validacion["email"]){
-            $valicacion['erroremail2'] = "Emails no coincidentes. Por favor, revise ambos email";
-            $validacion['sinerrores'] = false;
-        }
-    
-        if(empty($validacion["telefono"]) || !preg_match('/^(\+34|0034|34)?[ -]*(6|7|8|9)[ -]*([0-9][ -]*){8}$/', $validacion["telefono"])){
+        if(empty($validacion["TELEFONO"]) || !preg_match('/^(\+34|0034|34)?[ -]*(6|7|8|9)[ -]*([0-9][ -]*){8}$/', $validacion["TELEFONO"])){
             $validacion['errortelefono'] = "El numero de telefono no es correcto";
             $validacion['sinerrores'] = false;
         }
         
-        if(empty($validacion['contrasenia'])){
+        if(empty($validacion['PASSWORD'])){
             $validacion['errorcontrasenia'] = "Debe escribir una contrasña";
             $validacion['sinerrores'] = false;
         }
 
-        if(empty($validacion['contrasenia2']) || $validacion['contrasenia2'] != $validacion['contrasenia']){
+        if(empty($validacion['contrasenia2']) || $validacion['contrasenia2'] != $validacion['PASSWORD']){
             $validacion['errorcontrasenia2'] = "Las contraseñas no coinciden. Pruebe de nuevo.";
             $validacion['sinerrores'] = false;
         }
     
-        if(empty($validacion["sexo"])){
+        if(empty($validacion["SEXO"])){
           $validacion['errorsexo'] = "Debe seleccionar una opción obligatoriamente";
           $validacion['sinerrores'] = false;
         }
@@ -659,7 +669,7 @@ function checkFormulario($validacion, $foto){
             $validacion['errorfecha'] = "La fecha introducida no es correcta. Compruébela.";
         }
         
-        if($validacion["boton"] == "Enviar datos" && !isset($validacion['sinerrores'])){
+        if($validacion["boton"] == "Enviar" && (!isset($validacion['sinerrores']) || empty($validacion['sinerrores']))){
             $validacion['sinerrores']=true;
         }
 

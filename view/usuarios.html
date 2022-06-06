@@ -27,9 +27,10 @@
             </div>
             <div class="col text-end">
             {% if usuario.ESTADO == "Inactivo" %}
-                <a class="m-1 btn btn-primary" href="/model/validar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Validar</a>
-            {% endif %}    
-                <a class="m-1 btn btn-danger" href="/model/borrar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Borrar</a>
+                <a class="m-1 btn btn-success" href="/controller/validar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Validar</a>
+            {% endif %}
+                <a class="m-1 btn btn-primary" href="/controller/modificar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Editar</a>
+                <a class="m-1 btn btn-danger" href="/controller/borrar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Borrar</a>
             </div>
         </div>
     {% endfor %}
@@ -38,19 +39,19 @@
     <nav>
         <ul class="pagination justify-content-center">
             <li class="page-item{{ pagina == 1 ? ' disabled' : ''}}">
-                <a class="page-link " href="/model/usuarios.php?pagina=1">&laquo;</a>
+                <a class="page-link " href="/controller/usuarios.php?pagina=1">&laquo;</a>
             </li>
 
             <li class="page-item{{ pagina-1 < 1 or pagina == 1 ? ' disabled' : ''}}">
-                <a class="page-link" href="/model/usuarios.php?pagina={{ pagina-1 }}">Anterior</a>
+                <a class="page-link" href="/controller/usuarios.php?pagina={{ pagina-1 }}">Anterior</a>
             </li>
 
             <li class="page-item{{ pagina+1 > ultima or pagina == ultima ? ' disabled' : ''}}">
-                <a class="page-link" href="/model/usuarios.php?pagina={{ pagina+1 }}">Siguiente</a>
+                <a class="page-link" href="/controller/usuarios.php?pagina={{ pagina+1 }}">Siguiente</a>
             </li>
 
             <li class="page-item{{ pagina == ultima ? ' disabled' : ''}}">
-                <a class="page-link" href="/model/usuarios.php?pagina={{ ultima }}">&raquo;</a>
+                <a class="page-link" href="/controller/usuarios.php?pagina={{ ultima }}">&raquo;</a>
             </li>
         </ul>
     </nav>
