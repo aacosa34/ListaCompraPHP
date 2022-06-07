@@ -9,7 +9,7 @@
     <div class="card bg-light my-5">
         <h1 class="card-header bg-dark text-center text-white">{{titulo}}</h1>
         <div class="card-body shadow-lg">
-        {% if valores is not empty and estado == "Visionado" %}
+        {% if estado == "Visionado" or estado == "Validado" or estado == "Invalido" %}
             <form action="{{formulario}}" method="POST" enctype="multipart/form-data" novalidate>
                 <div class="row">
                     <div class="col align-self-center mb-4 mr-4 ml-4">
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input class="form-control {{valores.errornombre ? 'is-invalid'}}" id="floatingnombre" type="text" name="NOMBRE" placeholder="Escriba su NOMBRE" value="{{valores.NOMBRE}}" readonly/>
+                    <input class="form-control {{valores.errornombre ? 'is-invalid'}}" id="floatingnombre" type="text" name="NOMBRE" placeholder="Escriba su NOMBRE" value="{{valores.NOMBRE}}"  readonly/>
                     <label for="floatingnombre">Nombre</label>
                 {% if valores.errornombre is not empty %}
                     <p class="invalid-feedback">{{valores.errornombre}}</p>
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input class="form-control {{valores.errordni ? 'is-invalid'}}" id="floatingemail" type="text" name="DNI" placeholder="Escriba su dni" value="{{valores.DNI}}" readonly/>
+                    <input class="form-control {{valores.errordni ? 'is-invalid'}}" id="floatingemail" type="text" name="DNI" placeholder="Escriba su dni" value="{{valores.DNI}}" readonly />
                     <label for="floatingemail">DNI</label>
                 {% if valores.errordni is not empty %}
                     <p class="invalid-feedback">{{valores.errordni}}</p>
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="form-floating col mb-3">
-                    <input class="form-control {{valores.erroremail ? 'is-invalid'}}" id="floatingemail" type="text" name="EMAIL" placeholder="Escriba su email" value="{{valores.EMAIL}}" readonly/>
+                    <input class="form-control {{valores.erroremail ? 'is-invalid'}}" id="floatingemail" type="text" name="EMAIL" placeholder="Escriba su email" value="{{valores.EMAIL}}" {{not validado ? '' : 'readonly'}}/>
                     <label for="floatingemail">Email</label>
                 {% if valores.erroremail is not empty %}
                     <p class="invalid-feedback">{{valores.erroremail}}</p>
@@ -58,7 +58,7 @@
 
                 <div class="row">
                     <div class="form-floating col mb-3">
-                        <input class="form-control {{valores.errorcontrasenia ? 'is-invalid'}}" id="floatingemail" type="password" name="PASSWORD" placeholder="Escriba su contraseña" value="{{valores.PASSWORD}}" readonly/>
+                        <input class="form-control {{valores.errorcontrasenia ? 'is-invalid'}}" id="floatingemail" type="password" name="PASSWORD" placeholder="Escriba su contraseña" value="{{valores.PASSWORD}}" {{not validado ? '' : 'readonly'}}/>
                         <label for="floatingemail">Contraseña</label>
                     {% if valores.errorcontrasenia is not empty %}
                         <p class="invalid-feedback">{{valores.errorcontrasenia}}</p>
@@ -66,7 +66,7 @@
                     </div>
 
                     <div class="form-floating col mb-3">
-                        <input class="form-control {{valores.errorcontrasenia2 ? 'is-invalid'}}" id="floatingemail" type="password" name="contrasenia2" placeholder="Escriba su contraseña" value="{{valores.contrasenia2 ?? valores.PASSWORD}}" readonly/>
+                        <input class="form-control {{valores.errorcontrasenia2 ? 'is-invalid'}}" id="floatingemail" type="password" name="contrasenia2" placeholder="Escriba su contraseña" value="{{valores.contrasenia2 ?? valores.PASSWORD}}" {{not validado ? '' : 'readonly'}}/>
                         <label for="floatingemail">Repetir contraseña</label>
                     {% if valores.errorcontrasenia2 is not empty %}
                         <p class="invalid-feedback">{{valores.errorcontrasenia2}}</p>
@@ -75,7 +75,7 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input class="form-control {{valores.errortelefono ? 'is-invalid'}}" id="floatingtelefono" type="text" name="TELEFONO" placeholder="Escriba su telefono" value="{{valores.TELEFONO}}" readonly/>
+                    <input class="form-control {{valores.errortelefono ? 'is-invalid'}}" id="floatingtelefono" type="text" name="TELEFONO" placeholder="Escriba su telefono" value="{{valores.TELEFONO}}" {{not validado ? '' : 'readonly'}}/>
                     <label for="floatingtelefono">Teléfono</label>
                 {% if valores.errortelefono is not empty %}
                     <p class="invalid-feedback">{{valores.errortelefono}}</p>
@@ -85,18 +85,18 @@
                 <label for="formFecha">Fecha de nacimiento:</label>
                 <div class="row" id="formFecha">
                     <div class="form-floating col mb-3">
-                        <input class="form-control {{valores.errordia ? 'is-invalid'}}" id="floatingDia" type="text" name="dia" placeholder="Día" value="{{fecha.2}}" readonly/>
+                        <input class="form-control {{valores.errordia ? 'is-invalid'}}" id="floatingDia" type="text" name="dia" placeholder="Día" value="{{valores.dia ?? fecha.2}}" readonly/>
                         <label for="floatingDia">Día</label>
                     {% if valores.errorfecha is not empty %}
                         <p class="invalid-feedback">{{valores.errorfecha}}</p>
                     {% endif %}
                     </div>
                     <div class="form-floating col mb-3">
-                        <input class="form-control {{valores.errormes ? 'is-invalid'}}" id="floatingMes" type="text" name="mes" placeholder="Mes" value="{{fecha.1}}" readonly/>
+                        <input class="form-control {{valores.errormes ? 'is-invalid'}}" id="floatingMes" type="text" name="mes" placeholder="Mes" value="{{valores.mes ?? fecha.1}}" readonly/>
                         <label for="floatingMes">Mes</label>
                     </div>
                     <div class="form-floating col mb-3">
-                        <input class="form-control {{valores.erroranyo ? 'is-invalid'}}" id="floatingAnyo" type="text" name="anyo" placeholder="anyo" value="{{fecha.0}}" readonly/>
+                        <input class="form-control {{valores.erroranyo ? 'is-invalid'}}" id="floatingAnyo" type="text" name="anyo" placeholder="anyo" value="{{valores.anyo ?? fecha.0}}" readonly/>
                         <label for="floatingAnyo">Año</label>
                     </div>
 
@@ -116,29 +116,15 @@
                 {% endif %}
                 </div>
 
-                <input class="btn btn-primary" type="submit" name="boton" value="Activar e informar"/>
-                <input class="btn btn-warning" type="submit" name="boton" value="Informar de error"/>
-                <input class="btn btn-danger" type="submit" name="boton" value="Borrar usuario"/>
-                <a class="btn btn-info" href="/controller/usuarios.php">Volver a la lista de usuarios</a>
-
+                {% if validado == false %}
+                    <input class="btn btn-primary" type="submit" name="boton" value="Enviar"/>
+                {% elseif validado == true %}
+                    <input class="btn btn-primary" type="submit" name="boton" value="Confirmar"/>
+                {% endif %}
             </form>
-
-        {% elseif estado == "Activar"  %}
-            <p>El usuario D/Da. {{valores.NOMBRE}} {{valores.APELLIDOS}} ha sido activado en el sistema correctamente.</p>
-            <a class="btn btn-primary" href="/index.php">Volver a inicio</a>
-        {% elseif estado == "Borrar" %}
-            <p>Se ha borrado el usuario correctamente</p>
-            <a class="btn btn-primary" href="/index.php">Volver a inicio</a>
-        {% elseif estado == "Informar" %}
-            <div class="form-floating">
-                <textarea class="form-control" placeholder="Escriba un comentario" id="floatingTextarea2"></textarea>
-                <label for="floatingTextarea2">Informe de error a usuario: {{ valores.NOMBRE }}</label>
-            </div>
-
-            <a class="btn btn-primary" href="/index.php">Confirmar y volver a inicio</a>
-          </div>
+        {% elseif estado == "Modificado Usuario" %}
+            <p>El usuario D/Da. {{valores.NOMBRE}} {{valores.APELLIDOS}} ha sido modificado en el sistema correctamente.</p>
         {% endif %}
-
         </div>
 
 

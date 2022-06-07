@@ -14,16 +14,16 @@
                 <a href="/index.php" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                     <img src="/assets/brand.png" class="bi me-2" role="img"/>
                 </a>
-    
+
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li class="nav-item"><a href="/index.php" class="nav-link px-2 text-white">Inicio</a></li>
                 {% if user.ROL is not empty %}
                     <li class="nav-item"><a href="/controller/listas.php" class="nav-link px-2 text-white">Mis listas</a></li>
                 {% endif %}
-                
-                {% if user.ROL == "Usuario" %}
-                    <li class="nav-item"><a href="/controller/modificacion_form.php" class="nav-link px-2 text-white">Modificar mis datos</a></li>
+
+                {% if user.ROL == "Usuario" or user.ROL == "Administrador" %}
+                    <li class="nav-item"><a href="/controller/modificacion_usuario.php" class="nav-link px-2 text-white">Modificar mis datos</a></li>
                 {% endif %}
 
                 {% if user.ROL == "Administrador" %}
