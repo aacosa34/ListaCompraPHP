@@ -584,6 +584,67 @@ function acceptUser($validacion, $idusuario, $rolinsert){
     }
 }
 
+/**
+  * Funcion de Borrado de Usuarios desde el usuario solicitado
+  * Usa la COOKIE iusermod para obtener el ID en el controlador validar_user.php
+  * 
+  * 
+  **/
+function borrarUsuarioAdmin($idusuario){
+     // Inicio de insercion
+     global $conn;
+     getConnection();
+       
+     $query = $conn -> prepare("DELETE FROM USUARIOS WHERE IDUSUARIO = ?;");
+     $query->bind_param('i', $idusuario);
+     $query->execute();
+  
+  
+     if ($query -> affected_rows != 1){
+         echo "Error en la insercion";
+     }
+}
+
+/*
+* Necesita la COOKIE name para poder obtener el nombre de la foto
+* Validacion con admin necesita todos los campos
+*
+*
+ */
+function modificarUsuarioAdmin($validacion){
+    // Preparacion de la imagen
+    $path = realpath("../assets/tmpusuarios/");
+
+    // echo "PATH: " . $path . "\n";
+    $pathname = $path . "/" . $_COOKIE['name'];
+
+    // echo $pathname;
+
+    // echo " NOMBRE FOTO SESION " . $_COOKIE['name'];
+
+    $imgbin = file_get_contents($pathname);
+    $imgtype = getTypeImg($_COOKIE['name']);
+
+    // Concatenacion de los campos de fechas
+    $date = strtotime($validacion['anyo'] . "-" .  $validacion['mes'] . "-" . $validacion['dia']);
+    $birthdate = date('Y-m-d', $date);
+
+     
+    // Inicio de insercion
+    global $conn;
+    getConnection();
+      
+    // $query = $conn -> prepare("UPDATE USUARIOS SET DNI = ?, NOMBRE = ?, APELLIDOS = ?, TELEFONO = ?, EMAIL = ?, PASSWORD = ?, FNAC = ?, SEXO = ?, ROL = ?, ESTADO = ?, IMGTYPE = ?, IMGBINARY = ?) WHERE IDUSUARIO = ?;");
+    // $query->bind_param('sssssssssssb', $validacion['DNI'], $validacion['NOMBRE'], $validacion['APELLIDOS'], $validacion['TELEFONO'], $validacion['EMAIL'], $validacion['PASSWORD'], $birthdate, $validacion['SEXO'], $rol, $estado, $imgtype, $imgbin);
+    // $query->send_long_data(11, $imgbin); 
+    // $query->execute();
+ 
+ 
+    if ($query -> affected_rows != 1){
+        echo "Error en la insercion";
+    }
+}
+
 function activateUser($idusuario){
     global $conn;
     getConnection();
