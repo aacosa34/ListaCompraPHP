@@ -11,6 +11,15 @@ if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
 
     if($user['ROL'] == "Administrador"){
+        // Cleanning on bad exit
+        unset($_COOKIE['validado']);
+        unset($_COOKIE['nombrefoto']);
+        unset($_COOKIE['idusermod']);
+        unset($_COOKIE['idusuariodel']);
+        unset($_COOKIE['idusuariomod']);
+        unset($_COOKIE['rol']);
+        unset($_COOKIE['validado']);
+
         // Pagina por defecto
         $pag_actual = 1;
 

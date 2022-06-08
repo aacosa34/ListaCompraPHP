@@ -10,25 +10,26 @@ session_start();
 $formulario = '/controller/modificacion_usuario_admin.php';
 $estado_registro = "";
 $validado = 0;
+
 // Variable de control del usuario por defecto
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
 
     if($user['ROL'] == "Administrador"){
-        // GET idusuario por primera vez y lo almacenamos en una cookie
-        if (isset($_GET['idusuario']) && empty($_COOKIE['idusuario'])){
-            setcookie("idusuariomod", $_GET['idusuario'], time()+3600);
-        }
+        if($_SERVER['REQUEST_METHOD'] === 'GET'){
+            // GET idusuario por primera vez y lo almacenamos en una cookie
+            setcookie("idusermod", $_GET['idusuario'], time()+3600);
 
-        // Obtenemos la informacion del usuario
-        $validacion = getUserById($_COOKIE['idusuariomod']);
-        $fecha_nac = explode("-", $validacion['FNAC']); // Dividir la fecha obtenida de la fila
-        // Almacenamos la foto que tiene actualmente
-        $validacion['foto'] = "data:" . $validacion['IMGTYPE'] .  ";base64," . base64_encode($validacion['IMGBINARY']);
-        // Titulo
-        $titulo = 'Modificación administrador usuario: ' . $validacion['NOMBRE'];
-        // Ponemos que ya puede ver el estado de su formulario relleno
-        $estado_registro = "Modificacion";
+            // Obtenemos la informacion del usuario
+            $validacion = getUserById($_GET['idusuario']);
+            $fecha_nac = explode("-", $validacion['FNAC']); // Dividir la fecha obtenida de la fila
+            // Almacenamos la foto que tiene actualmente
+            $validacion['foto'] = "data:" . $validacion['IMGTYPE'] .  ";base64," . base64_encode($validacion['IMGBINARY']);
+            // Titulo
+            $titulo = 'Modificación administrador usuario: ' . $validacion['NOMBRE'];
+            // Ponemos que ya puede ver el estado de su formulario relleno
+            $estado_registro = "Modificacion";
+        }
 
         // Obtenemos los campos que han cambiado con el GET
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -42,7 +43,7 @@ if(isset($_SESSION['idusuario'])){
                 // No ha establecido foto... Sin embargo seguimos mostrando la vieja
                 if ($validacion['errorfoto']){
                     // Almacenamos la foto que tiene actualmente
-                    $validacion['foto'] = "data:" . $user['IMGTYPE'] .  ";base64," . base64_encode($user['IMGBINARY']);
+                    $validacion['foto'] = "data:" . $validacion['IMGTYPE'] .  ";base64," . base64_encode($validacion['IMGBINARY']);
                 }
             }
             // Validacion correcta, se registra para la vista y previsualizacion
@@ -61,12 +62,12 @@ if(isset($_SESSION['idusuario'])){
             else if (!empty($validacion) && $validacion['boton'] == "Confirmar" && $_COOKIE['validado'] == 1){
                 $titulo = 'Registro admin finalizado usuario: ' . $validacion['NOMBRE'];
                 // Le pasamos la cookie del rol para que la BD se inserte con los datos indicados por el administrador
-                modificarUsuarioAdmin($validacion, $_COOKIE['idusuariomod']);
+                modificarUsuarioAdmin($validacion, $_COOKIE['idusermod']);
                 $estado_registro = "Modificado Admin";
                 // Cleanning
                 unset($_COOKIE['validado']);
                 unset($_COOKIE['nombrefoto']);
-                unset($_COOKIE['idusuariomod']);
+                unset($_COOKIE['idusermod']);
             }
         }
     }

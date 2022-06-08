@@ -65,10 +65,12 @@ if(isset($_SESSION['idusuario'])){
         else if (!empty($validacion) && $validacion['boton'] == "Confirmar" && $_COOKIE['validado'] == 1){
             $titulo = 'Registro finalizado';
             // Le pasamos la cookie del rol para que la BD se inserte con los datos indicados por el administrador
-            modificarUsuarioAdmin($validacion, $_SESSION['idusuario']);
+            modificarUsuario($validacion, $_SESSION['idusuario']);
             $estado_registro = "Modificado Usuario";
             unset($_COOKIE['validado']);
+            setcookie("validado","", time()-3600);
             unset($_COOKIE['nombrefoto']);
+            setcookie("nombrefoto","", time()-3600);
         }
     }
 }

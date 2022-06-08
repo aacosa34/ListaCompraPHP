@@ -31,6 +31,7 @@ if(isset($_SESSION['idusuario'])){
             borrarUsuarioAdmin($_COOKIE['idusuariodel']);
             $estado = "Confirmacion";
             $titulo = "Usuario borrado";
+            setcookie("idusuariodel","", time()-3600, $cookiePath);
             unset($_COOKIE['idusuariodel']);
         }
     }
