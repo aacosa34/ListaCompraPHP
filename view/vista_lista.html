@@ -7,25 +7,25 @@
     {% block main %}
         <div class="row">
             <div class="col-md-4  m-4 text-center">
-                <img src="" class="rounded img-thumbnail" alt="Foto de la lista"/>
+                <img src="{{foto}}" class="rounded img-thumbnail" alt="Foto de la lista"/>
             </div>
             <div class="col-md-6 p-5 text-center">
-                <h1 class="fw-bold my-4"></h1>
-                <h4 class="my-4"></h4>
+                <h1 class="fw-bold my-4">{{lista.NOMBRE}}</h1>
+                <h4 class="my-4">{{lista.DESCRIPCION}}</h4>
             </div>
         </div>
 
         <div class="row">
             <div class="container col-md-8">
-            {% if privilegios == "Editor" or privilegios == "Propietario" %}
+            {% if lista.PRIVILEGIOS == "Editor" or lista.PRIVILEGIOS == "Propietario" %}
                 <div class="card shadow bg-light mx-5 my-2">
                     <h4 class="m-4">Añadir producto a la lista:</h4>
-                    <form class="row g-3 mx-4">
+                    <form class="row g-3 mx-4" action="/controller/vista_lista.php" method="POST">
                         <div class="col-md-4">
-                            <input class="form-control mb-4" type="text" id="nomProducto" placeholder="Nombre del producto"/>
+                            <input class="form-control mb-4" type="text" name="nomProducto" id="nomProducto" placeholder="Nombre del producto"/>
                         </div> 
                         <div class="col-md-2 ms-3">
-                            <input class="form-control mb-4" type="text" id="cantProducto" placeholder="Cantidad"/>
+                            <input class="form-control mb-4" type="text" name="cantProducto" id="cantProducto" placeholder="Cantidad"/>
                         </div>
                         <div class="col-auto">
                             <input class="btn btn-primary mx-2 mb-4" type="submit" name="boton" value="Añadir"/>
@@ -33,7 +33,7 @@
                     </form>
                 </div>
             {% endif %}
-                <div class="card shadow mx-5 my-2">
+                <div class="card shadow mx-5 mt-2 mb-5">
                     <table class="table">
                         <thead class="table-light text-center">
                             <tr>
@@ -45,13 +45,16 @@
                         <tbody class="text-center">
                         {% for i in productos %}
                             <tr>
-                                <td>{{i.NOMBRE|title}}</td>
-                                <td>{{i.CANTIDAD}}</td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-outline-primary">Modificar</button>
-                                    <button type="button" class="btn btn-sm btn-outline-success">Comprado</button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">Borrar</button>
-                                </td>
+                                <form action="/controller/vista_lista.php" method="POST">
+                                    <td><input type="text" name="nombre" class="form-control" value="{{i.NOMBRE|title}}" {{lista.PRIVILEGIOS == "Lector" ? 'readonly'}}/></td>
+                                    <td><input type="text" name="cantidad" class="form-control" value="{{i.CANTIDAD}}" {{lista.PRIVILEGIOS == "Lector" ? 'readonly'}}/></td>
+                                    <td>
+                                        <input type="hidden" name="idproducto" value="{{i.IDPRODUCTO}}"/>
+                                        <input type="submit" name="boton" class="btn btn-sm btn-outline-primary" value="Modificar"/>
+                                        <input type="submit" name="boton" class="btn btn-sm btn-outline-success" value="Comprado"/>
+                                        <input type="submit" name="boton" class="btn btn-sm btn-outline-danger" value="Borrar"/>
+                                    </td>
+                                </form>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -66,22 +69,34 @@
                     <div class="card-body text-center">
                         <table class="table-borderless">
                             <tbody>
-                                <tr>
-                                    <td>Usuario 1</td>
-                                {% if privilegios == "Propietario" %}
-                                    <td class="text-end"><button type="button" class="btn btn-sm btn-danger ms-4">Borrar</button></td>
-                                {% endif %}
-                                </tr>
-                                <tr>
-                                    <td>Usuario 2</td>
-                                {% if privilegios == "Propietario" %}
-                                    <td class="text-end"><button type="button" class="btn btn-sm btn-danger ms-4">Borrar</button></td>
-                                {% endif %}
-                                </tr>
+                                {% for i in usuarios %}
+                                    {% if i.IDUSUARIO != user.IDUSUARIO %}
+                                    <tr>
+                                        <td>{{i.NOMBRE}}</td>
+                                        {% if lista.PRIVILEGIOS == "Propietario" %}
+                                            <td class="text-end">
+                                                <a class="btn btn-sm btn-danger ms-4" href="/controller/borrar_colaborador.php?idusuario={{i.IDUSUARIO}}">Borrar</a>
+                                            </td>
+                                        {% endif %}
+                                    {% endif %}
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
-
-                        <button type="button" class="btn btn-success text-center mt-4">Añadir usuario</button>
+                        {% if lista.PRIVILEGIOS == "Propietario" %}
+                            <form action="/controller/aniadir_colaborador.php" method="POST">
+                                <div class="row">
+                                    <input type="text" class="form-control col mt-4 mx-2" name="email" placeholder="Introduzca email a añadir"/>
+                                    <select class="form-select col mt-4 mx-2" name="PRIVILEGIOS">
+                                        <option value="Lector">Lector</option>
+                                        <option value="Editor">Editor</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <input type="submit" name="boton" class="btn btn-success col mt-4 mx-2" value="Añadir usuario"/>
+                                </div>
+                            </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>

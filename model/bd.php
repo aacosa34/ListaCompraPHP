@@ -71,19 +71,19 @@ function comprobarLogin($email, $password){
     global $conn;
     getConnection();
 
-    $query = $conn->prepare("SELECT IDUSUARIO FROM USUARIOS WHERE EMAIL=? AND PASSWORD=?");
+    $query = $conn->prepare("SELECT IDUSUARIO,ESTADO FROM USUARIOS WHERE EMAIL=? AND PASSWORD=?");
     $query->bind_param('ss', $email, $password);
     $query->execute();
     $resultQuery = $query->get_result();
-
+    $num_rows = $resultQuery->num_rows;
     // Si encontramos un usuario, devolvemos true
-    if ($resultQuery->num_rows > 0) {
-      $usuario = $resultQuery->fetch_assoc();
+    $usuario = $resultQuery->fetch_assoc();
 
-      // Liberamos memoria despues de obtener los resultados de la consulta
-      $resultQuery -> free();
+    // Liberamos memoria despues de obtener los resultados de la consulta
+    $resultQuery -> free();
 
-      return $usuario;
+    if($usuario['ESTADO'] == "Activo" && $num_rows > 0){
+        return $usuario;
     }
     else{
         return '';
@@ -91,32 +91,11 @@ function comprobarLogin($email, $password){
 
 }
 
-// function getListas($idusuario){
-//     global $conn;
-//     getConnection();
-
-//     $query = $conn->prepare("SELECT L.IDLISTA,NOMBRE,PRIVILEGIOS,IMGBINARY,IMGTYPE FROM LISTA AS L INNER JOIN GRUPOS AS G ON G.IDLISTA=L.IDLISTA WHERE IDUSUARIO=?");
-//     $query->bind_param('i', $idusuario);
-//     $query->execute();
-//     $resultQuery = $query->get_result();
-
-//     if($resultQuery->num_rows > 0){
-//         $listas = $resultQuery->fetch_all(MYSQLI_ASSOC);
-//         // Liberamos memoria despues de obtener los resultados de la consulta
-//         $resultQuery -> free();
-
-//     }
-
-
-//     return $listas;
-
-// }
-
 function getListaById($idlista, $idusuario){
     global $conn;
     getConnection();
 
-    $query = $conn->prepare("SELECT L.IDLISTA,NOMBRE,PRIVILEGIOS,IMGBINARY,IMGTYPE FROM LISTA AS L INNER JOIN GRUPOS AS G ON G.IDLISTA=L.IDLISTA WHERE IDUSUARIO=? AND L.IDLISTA=?");
+    $query = $conn->prepare("SELECT L.IDLISTA,NOMBRE,DESCRIPCION,PRIVILEGIOS,IMGBINARY,IMGTYPE FROM LISTA AS L INNER JOIN GRUPOS AS G ON G.IDLISTA=L.IDLISTA WHERE IDUSUARIO=? AND L.IDLISTA=?");
     $query->bind_param('ii', $idusuario, $idlista);
     $query->execute();
     $resultQuery = $query->get_result();
@@ -130,6 +109,144 @@ function getListaById($idlista, $idusuario){
 
     return $lista;
 
+}
+
+function borrarLista($idlista){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("DELETE FROM LISTA WHERE IDLISTA=?");
+    $query->bind_param('i', $idlista);
+    $query->execute();
+
+    if($query->affected_rows != 1){
+        echo "Error al borrar la lista";
+    }
+}
+
+function getProductosLista($idlista){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("SELECT P.NOMBRE,LP.CANTIDAD,LP.IDPRODUCTO FROM LISTAPRODUCTOS AS LP INNER JOIN PRODUCTOS AS P ON P.IDPRODUCTO=LP.IDPRODUCTO WHERE LP.IDLISTA=?");
+    $query->bind_param('i', $idlista);
+    $query->execute();
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows > 0){
+        $productos = $resultQuery->fetch_all(MYSQLI_ASSOC);
+
+        $resultQuery -> free();
+    }
+
+    return $productos;
+}
+
+function borrarProductoById($idproducto, $idlista){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("DELETE FROM LISTAPRODUCTOS WHERE IDPRODUCTO=?");
+    $query->bind_param('i', $idproducto);
+    $query->execute();
+
+    if($query->affected_rows != 1){
+        echo $query->affected_rows;
+        echo "Error en el borrado de productos";
+    }
+}
+
+function modificarValoresProducto($producto, $idlista){
+    global $conn;
+    getConnection();
+
+    // Actualizamos la cantidad del producto en la lista
+    if(isset($producto['CANTIDAD']) && !empty($producto['CANTIDAD'])){
+        $query = $conn->prepare("UPDATE LISTAPRODUCTOS SET CANTIDAD=? WHERE IDLISTA=? AND IDPRODUCTO=?");
+        $query->bind_param('iii', $producto['CANTIDAD'], $idlista, $producto['IDPRODUCTO']);
+        $query->execute();
+    }
+
+    // Cambiamos el nombre del producto
+    if(isset($producto['NOMBRE']) && !empty($producto['NOMBRE'])){
+        $query = $conn->prepare("UPDATE PRODUCTOS SET NOMBRE=? WHERE IDPRODUCTO=?");
+        $query->bind_param('si', $producto['NOMBRE'], $producto['IDPRODUCTO']);
+        $query->execute();
+    }
+
+}
+
+function marcarProductoComprado($idproducto, $idlista){
+    global $conn;
+    getConnection();
+
+    // Insertamos en el historico el producto comprado
+
+    // Borramos el producto tras la actualizacion en el historico
+    borrarProductoById($idproducto, $idlista);
+}
+
+
+function getUsersOnList($idlista){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("SELECT U.NOMBRE, U.IDUSUARIO FROM USUARIOS AS U INNER JOIN GRUPOS AS G ON U.IDUSUARIO=G.IDUSUARIO WHERE G.IDLISTA=?");
+    $query->bind_param('i', $idlista);
+    $query->execute();
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows > 0){
+        $usuariosOnList = $resultQuery->fetch_all(MYSQLI_ASSOC);
+
+        $resultQuery -> free();
+    }
+
+    return $usuariosOnList;
+}
+
+function eliminarColaborador($idusuario, $idlista){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("DELETE FROM GRUPOS WHERE IDUSUARIO=? AND IDLISTA=?");
+    $query->bind_param('ii', $idusuario, $idlista);
+    $query->execute();
+}
+
+function insertarProducto($producto, $idlista){
+    global $conn;
+    getConnection();
+
+    // Insertamos el producto en la tabla de productos por su nombre
+    $query = $conn->prepare("INSERT INTO PRODUCTOS(NOMBRE) VALUES (?)");
+    $query->bind_param('s', $producto['NOMBRE']);
+    $query->execute();
+
+    if($query->affected_rows != 1){
+        echo "Error en la insercion de producto";
+    }
+
+    // Obtenemos el ID del producto que acabamos de introducir
+    $query = $conn->prepare("SELECT IDPRODUCTO FROM PRODUCTOS WHERE NOMBRE=?");
+    $query->bind_param('s', $producto['NOMBRE']);
+    $query->execute();
+
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows == 1){
+        $idproducto = $resultQuery->fetch_assoc();
+
+        $resultQuery->free();
+    }
+
+    $query = $conn->prepare("INSERT INTO LISTAPRODUCTOS VALUES (?, ?, ?)");
+    $query->bind_param('iii', $idlista, $idproducto['IDPRODUCTO'], $producto['CANTIDAD']);
+    $query->execute();
+
+    if($query->affected_rows != 1){
+        echo "Error en la insercion de producto";
+    }
 }
 
 function getSizeOfListas($idusuario){
@@ -560,8 +677,8 @@ function checkValidImage($imagen){
  * Dependencia de
  *
  */
-function formatImageB64($userfoto){
-    return "data:" . $userfoto['IMGTYPE'] .  ";base64," . base64_encode($userfoto['IMGBINARY']);
+function formatImageB64($foto){
+    return "data:" . $foto['IMGTYPE'] .  ";base64," . base64_encode($foto['IMGBINARY']);
 }
 
 function acceptUser($validacion, $idusuario, $rolinsert){

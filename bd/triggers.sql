@@ -26,7 +26,7 @@ Al borrar una lista se indica en el log y se actualiza el historico quitando sol
 Tb se registra el cambio de la cantidad de Listas con productos si esta lo tuviera
 */
 CREATE OR REPLACE TRIGGER DEL_LISTA
-AFTER DELETE ON LISTA FOR EACH ROW BEGIN
+BEFORE DELETE ON LISTA FOR EACH ROW BEGIN
     DECLARE COUNTPROD INT;
     DECLARE COUNTGRUPOS INT;
 

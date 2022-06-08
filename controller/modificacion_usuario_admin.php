@@ -11,6 +11,8 @@ $formulario = '/controller/modificacion_usuario_admin.php';
 $estado_registro = "";
 $validado = 0;
 
+$titulo = "Modificar mis datos";
+
 // Variable de control del usuario por defecto
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
@@ -42,8 +44,9 @@ if(isset($_SESSION['idusuario'])){
 
                 // No ha establecido foto... Sin embargo seguimos mostrando la vieja
                 if ($validacion['errorfoto']){
+                    $tmpuserfoto = getUserById($_COOKIE['idusermod']);
                     // Almacenamos la foto que tiene actualmente
-                    $validacion['foto'] = "data:" . $validacion['IMGTYPE'] .  ";base64," . base64_encode($validacion['IMGBINARY']);
+                    $validacion['foto'] = "data:" . $tmpuserfoto['IMGTYPE'] .  ";base64," . base64_encode($tmpuserfoto['IMGBINARY']);
                 }
             }
             // Validacion correcta, se registra para la vista y previsualizacion
