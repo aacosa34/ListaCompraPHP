@@ -39,7 +39,7 @@ if(isset($_SESSION['idusuario'])){
         if (isset($_GET['pagina'])){
             $pag_actual = $_GET['pagina'];
         }
-        
+
         if ($_GET["orden"] == "alfabeto" && empty($_GET["texto"])){
             $ultima_pag = ceil(getSizeOfListasAlphabeticOrder($_SESSION['idusuario'], $privilegio) / $offset);
 
@@ -49,7 +49,7 @@ if(isset($_SESSION['idusuario'])){
 
             if ($ultima_pag == 0){
                 $ultima_pag = $pag_actual;
-            }  
+            }
 
             $listasUser = getListasAlphabeticOrder($_SESSION['idusuario'], $privilegio, $pag_actual);
         }
@@ -59,10 +59,10 @@ if(isset($_SESSION['idusuario'])){
             if($pag_actual > $ultima_pag){
                 $pag_actual = 1;
             }
-            
+
             if ($ultima_pag == 0){
                 $ultima_pag = $pag_actual;
-            }  
+            }
 
             $listasUser = getListasAlphabeticOrderSearch($_SESSION['idusuario'], $privilegio, $_GET["texto"], $pag_actual);
         }
@@ -72,10 +72,10 @@ if(isset($_SESSION['idusuario'])){
             if($pag_actual > $ultima_pag){
                 $pag_actual = 1;
             }
-            
+
             if ($ultima_pag == 0){
                 $ultima_pag = $pag_actual;
-            }  
+            }
 
             $listasUser = getListasDateOrder($_SESSION['idusuario'], $privilegio, $pag_actual);
         }
@@ -84,11 +84,11 @@ if(isset($_SESSION['idusuario'])){
 
             if($pag_actual > $ultima_pag){
                 $pag_actual = 1;
-            } 
-            
+            }
+
             if ($ultima_pag == 0){
                 $ultima_pag = $pag_actual;
-            }  
+            }
 
             $listasUser = getListasDateOrderSearch($_SESSION['idusuario'], $privilegio, $_GET["texto"], $pag_actual);
         }
@@ -102,7 +102,7 @@ if(isset($_SESSION['idusuario'])){
 
             if ($ultima_pag == 0){
                 $ultima_pag = $pag_actual;
-            }  
+            }
 
             $listasUser = getListasAlphabeticOrder($_SESSION['idusuario'], $privilegio, $pag_actual);
         }
@@ -118,8 +118,9 @@ if(isset($_SESSION['idusuario'])){
         }
     }
 
-    
-}else{
+
+}
+else{
     header("Location: /index.php");
 }
 

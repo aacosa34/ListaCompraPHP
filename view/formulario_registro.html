@@ -9,7 +9,7 @@
     <div class="card bg-light my-5">
         <h1 class="card-header bg-dark text-center text-white">{{titulo}}</h1>
         <div class="card-body shadow-lg">
-        {% if estado == "Sin registro" or estado == "Validado" or estado == "Invalido" %}
+        {% if estado == "Sin registro" or estado == "Validado" or estado == "Invalido" or estado == "Modificacion" %}
             <form action="{{formulario}}" method="POST" enctype="multipart/form-data" novalidate>
                 <div class="row">
                     <div class="col align-self-center mb-4 mr-4 ml-4">
@@ -147,10 +147,10 @@
                 En caso de que no podamos verificar sus datos se enviará un email a la dirección proporcionada
                 informándole de ese hecho.
             </p>
+        {% elseif estado == "Modificado Admin" %}
+            <p>El usuario D/Da. {{valores.NOMBRE}} {{valores.APELLIDOS}} ha sido modificado en el sistema correctamente.</p>
         {% endif %}
         </div>
-
-
     </div>
     </div>
 

@@ -641,9 +641,8 @@ function borrarUsuarioAdmin($idusuario){
      $query->bind_param('i', $idusuario);
      $query->execute();
 
-
      if ($query -> affected_rows != 1){
-         echo "Error en la insercion";
+         echo "Error en el borrado";
      }
 }
 
@@ -668,6 +667,39 @@ function modificarUsuario($validacion, $idusuario){
     $query = $conn -> prepare("UPDATE USUARIOS SET PASSWORD = ?, EMAIL = ?, TELEFONO = ?, IMGTYPE = ?, IMGBINARY = ? WHERE IDUSUARIO = ?;");
     $query->bind_param('ssssbi', $validacion['PASSWORD'], $validacion['EMAIL'], $validacion['TELEFONO'], $imgtype, $imgbin, $idusuario);
     $query->send_long_data(4, $imgbin);
+    $query->execute();
+
+
+    if ($query -> affected_rows != 1){
+        echo "Error en la insercion";
+    }
+}
+
+/* Modificar todos los campos como administrador */
+function modificarUsuarioAdmin($validacion, $idusuario){
+    // Preparacion de la imagen - Indicamos la ruta de almacenamiento temporal de fotos
+    $path = realpath("../assets/tmpusuarios/");
+    $pathname = $path . "/" . $_COOKIE['nombrefoto'];
+    // Carga de imagen y obtencion del tipo para su insercion
+    $imgbin = file_get_contents($pathname);
+    $imgtype = getTypeImg($_COOKIE['nombrefoto']);
+    // Concatenacion de los campos de fechas
+    $date = strtotime($validacion['anyo'] . "-" .  $validacion['mes'] . "-" . $validacion['dia']);
+    $birthdate = date('Y-m-d', $date);
+
+    // Inicio de Actualizacion
+    global $conn;
+    getConnection();
+
+    $query = $conn -> prepare("UPDATE USUARIOS SET DNI = ?, NOMBRE = ?, APELLIDOS = ?,
+        TELEFONO = ?, EMAIL = ?, PASSWORD = ?,  FNAC = ?,
+        SEXO = ?, ROL = ?, ESTADO = ?, IMGTYPE = ?,
+        IMGBINARY = ? WHERE IDUSUARIO = ?;");
+    $query->bind_param('sssssssssssbs', $validacion['DNI'], $validacion['NOMBRE'], $validacion['APELLIDOS'],
+        $validacion['TELEFONO'], $validacion['EMAIL'], $validacion['PASSWORD'], $birthdate,
+        $validacion['SEXO'], $validacion['ROL'], $validacion['ESTADO'], $imgtype,
+        $imgbin, $idusuario);
+    $query->send_long_data(11, $imgbin);
     $query->execute();
 
 

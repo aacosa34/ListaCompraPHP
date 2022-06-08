@@ -11,8 +11,15 @@ $formulario = '/controller/modificacion_usuario.php';
 $estado_registro = "";
 $validado = 0;
 
+// No hay que controlar si es usuario o administrador, da igual, se modifican los valores de ellos mismos de manera limitada
 if(isset($_SESSION['idusuario'])){
     $validacion = $user = getUserById($_SESSION['idusuario']);
+
+    if ($user['ROL'] == "Administrador"){
+        // Redirigir a modificacion_usuario con su propio id
+        header("Location: /controller/modificacion_usuario_admin.php?idusuario=".$_SESSION['idusuario']);
+    }
+
     $fecha_nac = explode("-", $validacion['FNAC']); // Dividir la fecha obtenida de la fila
 
     // Almacenamos la foto que tiene actualmente
@@ -58,7 +65,7 @@ if(isset($_SESSION['idusuario'])){
         else if (!empty($validacion) && $validacion['boton'] == "Confirmar" && $_COOKIE['validado'] == 1){
             $titulo = 'Registro finalizado';
             // Le pasamos la cookie del rol para que la BD se inserte con los datos indicados por el administrador
-            modificarUsuario($validacion, $_SESSION['idusuario']);
+            modificarUsuarioAdmin($validacion, $_SESSION['idusuario']);
             $estado_registro = "Modificado Usuario";
             unset($_COOKIE['validado']);
             unset($_COOKIE['nombrefoto']);

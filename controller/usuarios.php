@@ -23,6 +23,9 @@ if(isset($_SESSION['idusuario'])){
         header("Location: /index.php");
     }
 }
+else{
+    header("Location: /index.php");
+}
 
 echo $twig->render('usuarios.html', ['listado' => $listado_paginado['pagina'],
                                      'user' => $user,

@@ -7,71 +7,75 @@ $twig = new \Twig\Environment($loader);
 
 session_start();
 
-$formulario = '/controller/modificacion_usuario.php';
-$estado_registro = "Visionado";
-$sinerrores = false;
+$formulario = '/controller/modificacion_usuario_admin.php';
+$estado_registro = "";
+$validado = 0;
+// Variable de control del usuario por defecto
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
 
-    // Titulo
-    $titulo = 'Modificación usuario: ' . $user['NOMBRE'];
+    if($user['ROL'] == "Administrador"){
+        // GET idusuario por primera vez y lo almacenamos en una cookie
+        if (isset($_GET['idusuario']) && empty($_COOKIE['idusuario'])){
+            setcookie("idusuariomod", $_GET['idusuario'], time()+3600);
+        }
 
-    // Acciones realizadas con ambos usuarios tanto Administrador como Usuario
-    // Modifican solo 3 campos
-    // Campo 1: email
-    // Campo 2: Telefono
-    // Campo 3: Passwords
-    // Campo 4: foto
-    if($user['ROL'] == "Administrador" || $user['ROL'] == "Usuario" ){
-        if($_SERVER['REQUEST_METHOD'] === 'POST' && ){
+        // Obtenemos la informacion del usuario
+        $validacion = getUserById($_COOKIE['idusuariomod']);
+        $fecha_nac = explode("-", $validacion['FNAC']); // Dividir la fecha obtenida de la fila
+        // Almacenamos la foto que tiene actualmente
+        $validacion['foto'] = "data:" . $validacion['IMGTYPE'] .  ";base64," . base64_encode($validacion['IMGBINARY']);
+        // Titulo
+        $titulo = 'Modificación administrador usuario: ' . $validacion['NOMBRE'];
+        // Ponemos que ya puede ver el estado de su formulario relleno
+        $estado_registro = "Modificacion";
+
+        // Obtenemos los campos que han cambiado con el GET
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
             // Validacion
             $validacion = checkFormulario($_POST, $_FILES['foto']);
 
-            if (!empty($_COOKIE['validado']) && $_COOKIE['validado'] == 1){
-                
+            // Existe error, se registra para la Vista
+            if(!empty($validacion) && $validacion['sinerrores'] === false && $validacion['boton'] == "Enviar"){
+                $estado_registro = "Invalido";
+
+                // No ha establecido foto... Sin embargo seguimos mostrando la vieja
+                if ($validacion['errorfoto']){
+                    // Almacenamos la foto que tiene actualmente
+                    $validacion['foto'] = "data:" . $user['IMGTYPE'] .  ";base64," . base64_encode($user['IMGBINARY']);
+                }
             }
-            setcookie("nombrefoto", $nombre, time()+3600);
-
-            // Obtencion de la fecha de nacimiento de formato SQL a HTML para render
-            $fecha_nac = explode("-", $valores['FNAC']); // Dividir la fecha obtenida de la fila
-
-            // Finalmente obtenemos la foto del usuario
-            $valores['foto'] = formatImageB64($valores);
-
-            // Pasamos a la fase borrador donde el formulario ya validado se pone en modo Borrador de solo lectura
-            $estado_registro = "Borrador";
-
+            // Validacion correcta, se registra para la vista y previsualizacion
+            else if (!empty($validacion) && $validacion['sinerrores'] === true && $validacion['boton'] == "Enviar"){
+                $estado_registro = "Validado";
+                $validado = true;
+                setcookie("validado", 1, time()+3600);
+                // Almacenamos la foto
+                $nombre = $_FILES['foto']['name'];
+                // Almacenamos el nombre de la foto de manera temporal
+                setcookie("nombrefoto", $nombre, time()+3600);
+                // Cambiamos el titulo para indicar confirmacion
+                $titulo = 'Confirmar modificacion admin usuario: ' . $validacion['NOMBRE'];
             }
-            else {
-                // No hay POST con la comprobacion de valores, usamos los por defecto
-                $validacion = $user;
+            // Ya validado, se revisa y se inserta con la confirmacion
+            else if (!empty($validacion) && $validacion['boton'] == "Confirmar" && $_COOKIE['validado'] == 1){
+                $titulo = 'Registro admin finalizado usuario: ' . $validacion['NOMBRE'];
+                // Le pasamos la cookie del rol para que la BD se inserte con los datos indicados por el administrador
+                modificarUsuarioAdmin($validacion, $_COOKIE['idusuariomod']);
+                $estado_registro = "Modificado Admin";
+                // Cleanning
+                unset($_COOKIE['validado']);
+                unset($_COOKIE['nombrefoto']);
+                unset($_COOKIE['idusuariomod']);
             }
-        }
-
-        // Activacion del usuario, no hace falta rellenar el Formulario
-        if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_COOKIE['idusermod'])){
-            if(isset($_POST['boton']) && $_POST['boton'] == "Activar e informar"){
-                activateUser($_COOKIE['idusermod']);
-            }
-
-            if(isset($_POST['boton']) && $_POST['boton'] == "Borrar usuario"){
-                borrarUsuarioAdmin($_COOKIE['idusermod']);
-                $estado_registro = "Borrar";
-            }
-
-            if(isset($_POST['boton']) && $_POST['boton'] == "Informar de error"){
-                $estado_registro = "Informar";
-            }
-
-            // La cookie se desactiva si hemos realizado cualquiera de las acciones anteriores
-            unset($_COOKIE['idusermod']);
-
-            $estado_registro = "Enviado";
         }
     }
-    else{
+    else {
         header("Location: /index.php");
     }
+}
+else{
+    header("Location: /index.php");
 }
 /**
   * Variables de control
@@ -84,14 +88,13 @@ if(isset($_SESSION['idusuario'])){
   *         Informar - Hemos llamado al textbox de insertar el informe del usuario
   **/
 
-echo $twig->render('formulario_validacion.html', [  'user' => $user,
-                                                    'valores' => $valores,
-                                                    'fecha' => $fecha_nac,
-                                                    'formulario' => $formulario,
-                                                    'titulo' => $titulo,
-                                                    'estado' => $estado_registro]);
-
-
+  echo $twig->render('formulario_registro.html', [  'user' => $user,
+                                                      'valores' => $validacion,
+                                                      'fecha' => $fecha_nac,
+                                                      'formulario' => $formulario,
+                                                      'titulo' => $titulo,
+                                                      'estado' => $estado_registro,
+                                                      'validado' => $validado]);
 
 
 ?>

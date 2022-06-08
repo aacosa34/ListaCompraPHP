@@ -29,13 +29,13 @@
             {% if usuario.ESTADO == "Inactivo" %}
                 <a class="m-1 btn btn-success" href="/controller/validar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Validar</a>
             {% endif %}
-                <a class="m-1 btn btn-primary" href="/controller/modificar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Editar</a>
+                <a class="m-1 btn btn-primary" href="/controller/modificacion_usuario_admin.php?idusuario={{usuario.IDUSUARIO}}" role="button">Editar</a>
                 <a class="m-1 btn btn-danger" href="/controller/borrar_user.php?idusuario={{usuario.IDUSUARIO}}" role="button">Borrar</a>
             </div>
         </div>
     {% endfor %}
     </div>
-    
+
     <nav>
         <ul class="pagination justify-content-center">
             <li class="page-item{{ pagina == 1 ? ' disabled' : ''}}">
