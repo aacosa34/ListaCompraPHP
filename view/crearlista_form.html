@@ -1,0 +1,53 @@
+{% extends "padre.html" %}
+
+{% block title %}
+    Crear una lista
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="card bg-light my-5">
+        <h1 class="card-header bg-dark text-center text-white">{{titulo}}</h1>
+        <div class="card-body shadow-lg">
+            {% if estado == "Crear" or estado == "Confirmar" or estado == "Editar" %}
+            <form action="{{formulario}}" method="POST" enctype="multipart/form-data" novalidate>
+                <div class="row">
+                    <div class="col align-self-center mb-4 mr-4 ml-4">
+                        <label for="formFileSm" class="form-label {{valores.errorfoto ? 'is-invalid'}}">Fotografía</label>
+                        <input class="form-control form-control-sm" name="foto" id="formFileSm" type="file">
+                    {% if valores.errorfoto is not empty %}
+                        <p class="invalid-feedback">{{valores.errorfoto}}</p>
+                    {% endif %}
+                    </div>
+                    <div class="col mb-4 ml-4 text-center">
+                        <img src="{{valores.foto ? valores.foto : '/assets/listas.jpg'}}" class="rounded flex-shrink-0" witdh="256" height="256" alt="Imagen lista por defecto"/>
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="floatingnombre" type="text" name="NOMBRE" placeholder="Escriba el nombre de la lista" value="{{valores.NOMBRE}}" {{estado == 'Confirmar' ? 'readonly'}}/>
+                    <label for="floatingnombre">Nombre de la lista</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" placeholder="Descripcion" name="DESCRIPCION" id="floatingTextarea" {{estado == 'Confirmar' ? 'readonly'}}>{{valores.DESCRIPCION}}</textarea>
+                    <label for="floatingTextarea">Descripción</label>   
+                </div>
+
+                {% if estado == 'Crear' %}
+                    <input class="btn btn-primary" type="submit" name="boton" value="Crear lista"/>
+                {% elseif estado == 'Modificar' %}
+                    <input class="btn btn-primary" type="submit" name="boton" value="Editar lista"/>
+                {% elseif estado == 'Confirmar' %}
+                    <input class="btn btn-success" type="submit" name="boton" value="Confirmar datos"/>
+                {% endif %}
+            </form>
+            {% else %}
+                <p>La lista ha sido creada correctamente.</p>
+                <a href="/index.php" class="btn btn-primary m-2" value="Volver a inicio"/>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -37,6 +37,54 @@ function getUserById($idusuario){
     return $usuario;
 }
 
+function getUserByEmail($email){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("SELECT * FROM USUARIOS WHERE EMAIL=?");
+    $query->bind_param("s", $email);
+    $query->execute();
+
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows>0){
+        $usuario = $resultQuery->fetch_assoc();
+    }
+
+    return $usuario;
+}
+
+function isUserInList($idusuario, $idlista){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("SELECT * FROM GRUPOS WHERE IDUSUARIO=? AND IDLISTA=?");
+    $query->bind_param("ii", $idusuario, $idlista);
+    $query->execute();
+
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows>0){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function addUserToList($idusuario, $privilegios, $idlista){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("INSERT INTO GRUPOS(IDLISTA,IDUSUARIO,PRIVILEGIOS) VALUES (?,?,?)");
+    $query->bind_param("iis", $idlista, $idusuario, $privilegios);
+    $query->execute();
+
+    if($query->affected_rows != 1){
+        echo "No se ha añadido correctamente el usuario";
+    }
+}
+
+
 function getEstadisticas(){
     global $conn;
     getConnection();
@@ -56,7 +104,7 @@ function getProductosComprados(){
     global $conn;
     getConnection();
 
-    $query = $conn->prepare("SELECT * FROM PRODUCTOSENLISTAS");
+    $query = $conn->prepare("SELECT NOMBRE,CANTIDAD FROM HISTORICOPRODUCTOS");
     $query->execute();
     $resultQuery = $query->get_result();
 
@@ -156,6 +204,25 @@ function borrarProductoById($idproducto, $idlista){
     }
 }
 
+function getProductoById($idproducto, $idlista){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("SELECT NOMBRE,CANTIDAD FROM LISTAPRODUCTOS AS L INNER JOIN PRODUCTOS AS P ON L.IDPRODUCTO=P.IDPRODUCTO WHERE P.IDPRODUCTO=? AND IDLISTA=?");
+    $query->bind_param('ii', $idproducto, $idlista);
+    $query->execute();
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows > 0){
+        $producto = $resultQuery->fetch_assoc();
+        // Liberamos memoria despues de obtener los resultados de la consulta
+        $resultQuery -> free();
+    }
+
+    return $producto;
+    
+}
+
 function modificarValoresProducto($producto, $idlista){
     global $conn;
     getConnection();
@@ -176,14 +243,19 @@ function modificarValoresProducto($producto, $idlista){
 
 }
 
-function marcarProductoComprado($idproducto, $idlista){
+function marcarProductoComprado($nombre, $cantidad){
     global $conn;
     getConnection();
 
     // Insertamos en el historico el producto comprado
+    $query = $conn->prepare("INSERT INTO HISTORICOPRODUCTOS (NOMBRE,CANTIDAD) VALUES (?, ?)");
+    $query->bind_param('si', $nombre, $cantidad);
+    $query->execute();
 
-    // Borramos el producto tras la actualizacion en el historico
-    borrarProductoById($idproducto, $idlista);
+    if($query->affected_rows != 1){
+        echo "Error en la insercion en el historico de productos";
+    }
+
 }
 
 
@@ -266,7 +338,7 @@ function getListasAlphabeticOrder($idusuario, $privilegio, $pagina){
     global $conn;
     getConnection();
 
-    $offset = 6;
+    $offset = 3;
     $minimo = 0;
     $inicio = (($offset * $pagina) - $offset) > 0 ? ($offset * $pagina) - $offset : $minimo;
 
@@ -334,7 +406,7 @@ function getListasAlphabeticOrderSearch($idusuario, $privilegio, $text, $pagina)
     getConnection();
 
     $text = "%" . $text . "%";
-    $offset = 6;
+    $offset = 3;
     $minimo = 0;
     $inicio = (($offset * $pagina) - $offset) > 0 ? ($offset * $pagina) - $offset : $minimo;
 
@@ -401,7 +473,7 @@ function getListasDateOrder($idusuario, $privilegio, $pagina){
     global $conn;
     getConnection();
 
-    $offset = 6;
+    $offset = 3;
     $minimo = 0;
     $inicio = (($offset * $pagina) - $offset) > 0 ? ($offset * $pagina) - $offset : $minimo;
 
@@ -464,7 +536,7 @@ function getListasDateOrderSearch($idusuario, $privilegio, $text, $pagina){
     getConnection();
 
     $text = "%" . $text . "%";
-    $offset = 6;
+    $offset = 3;
     $minimo = 0;
     $inicio = (($offset * $pagina) - $offset) > 0 ? ($offset * $pagina) - $offset : $minimo;
 
@@ -704,6 +776,83 @@ function acceptUser($validacion, $idusuario, $rolinsert){
     }
  }
 
+function insertList($valores){
+    // Preparacion de la imagen - Indicamos la ruta de almacenamiento temporal de fotos
+    $path = realpath("../assets/tmplistas/");
+    $pathname = $path . "/" . $_COOKIE['nombrefoto'];
+
+    // Carga de imagen y obtencion del tipo para su insercion
+    $imgbin = file_get_contents($pathname);
+    $imgtype = getTypeImg($_COOKIE['nombrefoto']);
+
+    // Inicio de insercion
+    global $conn;
+    getConnection();
+
+    $query = $conn -> prepare("INSERT INTO LISTA (NOMBRE, IDPROPIETARIO, DESCRIPCION, FECHA, IMGTYPE, IMGBINARY) VALUES  (?, ?, ?, NOW(), ?, ?)");
+    $query->bind_param('sissb', $valores['NOMBRE'], $_SESSION['idusuario'], $valores['DESCRIPCION'], $imgtype, $imgbin);
+    $query->send_long_data(4, $imgbin); 
+    $query->execute();
+
+    if ($query -> affected_rows != 1){
+        echo "Error en la insercion";
+    }
+
+
+    $query = $conn->prepare("SELECT IDLISTA FROM LISTA WHERE NOMBRE=? AND IDPROPIETARIO=?");
+    $query->bind_param('si', $valores['NOMBRE'], $_SESSION['idusuario']);
+    $query->execute();
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows > 0){
+        // Si encontramos la lista, cogemos su id
+        $lista = $resultQuery->fetch_assoc();
+    }
+
+    $idusuario = $_SESSION['idusuario'];
+    $idlista = $lista['IDLISTA'];
+    $privilegio = "Propietario";
+
+    $query = $conn -> prepare("INSERT INTO GRUPOS (IDLISTA, IDUSUARIO, PRIVILEGIOS) VALUES (?, ?, ?)");
+    $query->bind_param('iis', $idlista, $idusuario, $privilegio);
+    $query->execute();
+
+    if ($query -> affected_rows != 1){
+        echo "Error en la insercion";
+    }
+
+
+    // Borramos la cookie una vez terminada la insercion
+    unset($_COOKIE['nombrefoto']);
+}
+
+function checkLista($validacion, $foto){
+     // Adrian te voy a matar, no dejes sin fijar variables
+     $validacion['sinerrores'] = true;
+
+     if(empty($foto) || !checkValidImage($foto)){
+         $validacion['errorfoto'] = "Fallo en el archivo subido, formato invalido: Formatos: aceptados jpg, jpeg, png";
+         $validacion['sinerrores'] = false;
+     }else{
+         // Copia de foto a carpeta temporal
+         $filename = $foto["name"];
+         $tempname = $foto["tmp_name"];
+         $folder = realpath("../assets/tmpusuarios/") . "/" . $filename;
+         $folder_relative = "../assets/tmpusuarios/" . $filename;
+         $validacion['foto'] = $folder_relative;
+
+         if (!move_uploaded_file($tempname, $folder)) {
+            $validacion['errorfoto'] = "Fallo foto no subida correctamente";
+            $validacion['sinerrores'] = false;
+        }
+     }
+
+     if(empty($validacion["NOMBRE"]) || !preg_match('/^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/', $validacion["NOMBRE"])){
+         $validacion['errornombre'] = "Debe escribir su Nombre (solo letras)";
+         $validacion['sinerrores'] = false;
+     }
+}
+
 
  /**
    * COOKIES esperada $_COOKIE['nombrefoto'] para poder realizar la insercion correcta de la foto
@@ -754,12 +903,16 @@ function borrarUsuarioAdmin($idusuario){
      global $conn;
      getConnection();
 
-     $query = $conn -> prepare("DELETE FROM USUARIOS WHERE IDUSUARIO = ?;");
+     $query = $conn->prepare("DELETE FROM LISTA WHERE IDPROPIETARIO=?");
+     $query->bind_param('i', $idusuario);
+     $query->execute();
+
+     $query = $conn -> prepare("DELETE FROM USUARIOS WHERE IDUSUARIO = ?");
      $query->bind_param('i', $idusuario);
      $query->execute();
 
      if ($query -> affected_rows != 1){
-         echo "Error en el borrado";
+         echo "Error en el borrado de usuario";
      }
 }
 
@@ -846,7 +999,7 @@ function checkFormulario($validacion, $foto){
     $validacion['sinerrores'] = true;
 
         if(empty($foto) || !checkValidImage($foto)){
-            $validacion['errorfoto'] = "Fallo en el archivo subido, foto no subida correctamente o formato invalido: Formatos: aceptados jpg, jpeg, png";
+            $validacion['errorfoto'] = "Fallo en el archivo subido, formato invalido: Formatos: aceptados jpg, jpeg, png";
             $validacion['sinerrores'] = false;
         }else{
             // Copia de foto a carpeta temporal
@@ -857,7 +1010,8 @@ function checkFormulario($validacion, $foto){
             $validacion['foto'] = $folder_relative;
 
             if (!move_uploaded_file($tempname, $folder)) {
-                echo "Failed to upload image!";
+                $validacion['errorfoto'] = "Fallo foto no subida correctamente";
+                $validacion['sinerrores'] = false;
             }
         }
 

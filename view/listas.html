@@ -10,7 +10,7 @@
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light">Mis listas</h1>
             <!-- CREAR MAS TARDE -->
-            <a href="/controller/crearlista_form.php" class="btn btn-success m-2">Crear una lista</a>
+            <a href="/controller/crear_lista.php" class="btn btn-success m-2">Crear una lista</a>
             <p>Mostrar listas en las que:</p>
             <form action="listas.php" method="GET">
               <div class="input-group mb-3 justify-content-center">
@@ -63,8 +63,10 @@
 
                       <a href="/controller/vista_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-primary">Ver</a>
                       {% if listas[i].PRIVILEGIOS == 'Propietario' %}
+                        <a href="/controller/editar_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-success">Modificar</a>
                         <a href="/controller/borrar_lista.php?idlista={{listas[i].IDLISTA}}" class="btn btn-sm btn-outline-danger">Borrar</a>
                       {% endif %}
+
                     </div>
                   </div>
                 </div>

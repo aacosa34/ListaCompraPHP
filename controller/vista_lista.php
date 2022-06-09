@@ -30,7 +30,10 @@ if(isset($_SESSION['idusuario'])){
                                      'CANTIDAD' => $_POST['cantidad']);
             modificarValoresProducto($prodActualizado, $_SESSION['idlista']);
         }else if($_POST['boton'] == "Comprado"){
-            marcarProductoComprado($_POST['idproducto'], $_SESSION['idlista']);
+            $prod = getProductoById($_POST['idproducto'], $_SESSION['idlista']);
+            marcarProductoComprado($prod['NOMBRE'], $prod['CANTIDAD']);
+            // Borramos el producto tras la actualizacion en el historico
+            borrarProductoById($_POST['idproducto'], $_SESSION['idlista']);
         }
         else if($_POST['boton'] == "Borrar"){
             borrarProductoById($_POST['idproducto'], $_SESSION['idlista']);

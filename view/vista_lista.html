@@ -39,7 +39,9 @@
                             <tr>
                                 <th scope="col">Producto</th>
                                 <th scope="col">Cantidad</th>
+                                {% if lista.PRIVILEGIOS != 'Lector' %}
                                 <th scope="col">Modificaciones</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody class="text-center">
@@ -48,12 +50,16 @@
                                 <form action="/controller/vista_lista.php" method="POST">
                                     <td><input type="text" name="nombre" class="form-control" value="{{i.NOMBRE|title}}" {{lista.PRIVILEGIOS == "Lector" ? 'readonly'}}/></td>
                                     <td><input type="text" name="cantidad" class="form-control" value="{{i.CANTIDAD}}" {{lista.PRIVILEGIOS == "Lector" ? 'readonly'}}/></td>
+                                    
+                                    {% if lista.PRIVILEGIOS != 'Lector' %}
                                     <td>
                                         <input type="hidden" name="idproducto" value="{{i.IDPRODUCTO}}"/>
                                         <input type="submit" name="boton" class="btn btn-sm btn-outline-primary" value="Modificar"/>
                                         <input type="submit" name="boton" class="btn btn-sm btn-outline-success" value="Comprado"/>
                                         <input type="submit" name="boton" class="btn btn-sm btn-outline-danger" value="Borrar"/>
                                     </td>
+                                    {% endif %}
+                                   
                                 </form>
                             </tr>
                         {% endfor %}
@@ -87,7 +93,7 @@
                             <form action="/controller/aniadir_colaborador.php" method="POST">
                                 <div class="row">
                                     <input type="text" class="form-control col mt-4 mx-2" name="email" placeholder="Introduzca email a añadir"/>
-                                    <select class="form-select col mt-4 mx-2" name="PRIVILEGIOS">
+                                    <select class="form-select col mt-4 mx-2" name="privilegios">
                                         <option value="Lector">Lector</option>
                                         <option value="Editor">Editor</option>
                                     </select>

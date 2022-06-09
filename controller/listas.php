@@ -30,7 +30,7 @@ if(isset($_SESSION['idusuario'])){
         $tamanio = getSizeOfListas($_SESSION['idusuario']);
 
         $pag_actual = 1;
-        $offset = 6;
+        $offset = 3;
         $ultima_pag = ceil($tamanio/$offset);
 
 
@@ -110,7 +110,7 @@ if(isset($_SESSION['idusuario'])){
 
 
     foreach($listasUser as $row){
-        if($listaUser['IMGBINARY'] != NULL){
+        if($row['IMGBINARY'] != NULL){
             $img[] = 'data: ' . $row['IMGTYPE'] . ';base64,' . base64_encode($row['IMGBINARY']);
         }
         else{
