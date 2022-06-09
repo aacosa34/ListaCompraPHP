@@ -13,12 +13,23 @@ if(isset($_SESSION['idusuario'])){
     if($user['ROL'] == "Administrador"){
         // Cleanning on bad exit
         unset($_COOKIE['validado']);
+        setcookie('validado',"", time()-3600);
         unset($_COOKIE['nombrefoto']);
+        setcookie('nombrefoto',"", time()-3600);
+
         unset($_COOKIE['idusermod']);
+        setcookie('idusermod',"", time()-3600);
+
         unset($_COOKIE['idusuariodel']);
+        setcookie('idusuariodel',"", time()-3600);
+
         unset($_COOKIE['idusuariomod']);
+        setcookie('idusuariomod',"", time()-3600);
+
         unset($_COOKIE['rol']);
-        unset($_COOKIE['validado']);
+        setcookie('rol',"", time()-3600);
+
+
 
         // Pagina por defecto
         $pag_actual = 1;

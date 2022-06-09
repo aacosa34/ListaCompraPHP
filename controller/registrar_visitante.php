@@ -30,7 +30,6 @@ if(!isset($_SESSION['idusuario'])){
         }
         // Validacion correcta, se registra para la vista y previsualizacion
         else if (!empty($validacion) && $validacion['sinerrores'] === true && $validacion['boton'] == "Enviar"){
-            echo "Llega a validado";
             $estado_registro = "Validado";
             $validado = true;
             setcookie("validado", 1, time()+3600);

@@ -9,7 +9,7 @@
     <div class="card bg-light my-5">
         <h1 class="card-header bg-dark text-center text-white">{{titulo}}</h1>
         <div class="card-body shadow-lg">
-            {% if estado == "Crear" or estado == "Confirmar" or estado == "Editar" %}
+            {% if estado == "Crear" or estado == "Validado" or estado == "Editar" or estado == "Invalido crear" or estado == "Invalido editar" %}
             <form action="{{formulario}}" method="POST" enctype="multipart/form-data" novalidate>
                 <div class="row">
                     <div class="col align-self-center mb-4 mr-4 ml-4">
@@ -25,26 +25,34 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input class="form-control" id="floatingnombre" type="text" name="NOMBRE" placeholder="Escriba el nombre de la lista" value="{{valores.NOMBRE}}" {{estado == 'Confirmar' ? 'readonly'}}/>
+                    <input class="form-control {{valores.errornombre ? 'is-invalid'}}" id="floatingnombre" type="text" name="NOMBRE" placeholder="Escriba el nombre de la lista" value="{{valores.NOMBRE}}" {{estado == 'Validado' ? 'readonly'}}/>
                     <label for="floatingnombre">Nombre de la lista</label>
+                    {% if valores.errornombre is not empty %}
+                        <p class="invalid-feedback">{{valores.errornombre}}</p>
+                    {% endif %}
+
                 </div>
 
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Descripcion" name="DESCRIPCION" id="floatingTextarea" {{estado == 'Confirmar' ? 'readonly'}}>{{valores.DESCRIPCION}}</textarea>
+                    <textarea class="form-control" placeholder="Descripcion" name="DESCRIPCION" id="floatingTextarea" {{estado == 'Validado' ? 'readonly'}}>{{valores.DESCRIPCION}}</textarea>
                     <label for="floatingTextarea">Descripción</label>   
                 </div>
 
-                {% if estado == 'Crear' %}
+                {% if estado == 'Crear' or estado == "Invalido crear" %}
                     <input class="btn btn-primary" type="submit" name="boton" value="Crear lista"/>
-                {% elseif estado == 'Modificar' %}
+                {% elseif estado == 'Editar' or estado == 'Invalido editar' %}
                     <input class="btn btn-primary" type="submit" name="boton" value="Editar lista"/>
-                {% elseif estado == 'Confirmar' %}
+                {% elseif estado == 'Validado' %}
                     <input class="btn btn-success" type="submit" name="boton" value="Confirmar datos"/>
                 {% endif %}
             </form>
             {% else %}
-                <p>La lista ha sido creada correctamente.</p>
-                <a href="/index.php" class="btn btn-primary m-2" value="Volver a inicio"/>
+                {% if estado != "Lista modificada" %}
+                    <p>La lista ha sido creada correctamente.</p>
+                {% else %}
+                    <p>La lista ha sido modificada correctamente.</p>
+                {% endif %}
+                <a href="/index.php" class="btn btn-primary m-2">Volver a inicio</a>
             {% endif %}
         </div>
     </div>

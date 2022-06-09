@@ -2,6 +2,11 @@
 
 $conn = NULL;
 
+// function restartDB(){
+//     $rootconn;
+
+// }
+
 function getConnection(){
     global $conn;
 
@@ -837,8 +842,8 @@ function checkLista($validacion, $foto){
          // Copia de foto a carpeta temporal
          $filename = $foto["name"];
          $tempname = $foto["tmp_name"];
-         $folder = realpath("../assets/tmpusuarios/") . "/" . $filename;
-         $folder_relative = "../assets/tmpusuarios/" . $filename;
+         $folder = realpath("../assets/tmplistas/") . "/" . $filename;
+         $folder_relative = "../assets/tmplistas/" . $filename;
          $validacion['foto'] = $folder_relative;
 
          if (!move_uploaded_file($tempname, $folder)) {
@@ -847,10 +852,38 @@ function checkLista($validacion, $foto){
         }
      }
 
-     if(empty($validacion["NOMBRE"]) || !preg_match('/^([A-ZÁÉÍÓÚ]{1}[a-zñáéíóú]+[\s]*)+$/', $validacion["NOMBRE"])){
-         $validacion['errornombre'] = "Debe escribir su Nombre (solo letras)";
+     if(empty($validacion["NOMBRE"])){
+         $validacion['errornombre'] = "Debe escribir el nombre de la lista";
          $validacion['sinerrores'] = false;
      }
+
+     return $validacion;
+}
+
+function modificarInfoLista($validacion, $idusuario, $idlista){
+    global $conn;
+    getConnection();
+
+    // Preparacion de la imagen - Indicamos la ruta de almacenamiento temporal de fotos
+    $path = realpath("../assets/tmplistas/");
+    $pathname = $path . "/" . $_COOKIE['nombrefoto'];
+
+    // Carga de imagen y obtencion del tipo para su insercion
+    $imgbin = file_get_contents($pathname);
+    $imgtype = getTypeImg($_COOKIE['nombrefoto']);
+    
+    $descripcion = $validacion['DESCRIPCION'] ?? '';
+    
+    $query = $conn->prepare("UPDATE LISTA SET NOMBRE=?, DESCRIPCION=?, IMGTYPE=?, IMGBINARY=? WHERE IDPROPIETARIO=? AND IDLISTA=?");
+    $query->bind_param('sssbii', $validacion['NOMBRE'], $descripcion, $imgtype, $imgbin, $idusuario, $idlista);
+    $query->send_long_data(3, $imgbin);
+    $query->execute();
+
+
+    if ($query -> affected_rows != 1){
+        echo "Error en la modificacion de lista";
+    }
+
 }
 
 

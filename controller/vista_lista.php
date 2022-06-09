@@ -10,8 +10,11 @@ session_start();
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
 
-    if($_SERVER['REQUEST_METHOD'] == 'GET'){
+    if($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['idlista'])){
         $_SESSION['idlista'] = $_GET['idlista']; // Guardamos el id de la lista en la sesion
+    }
+    else {
+        header("Location: /controller/listas.php");
     }
     $lista = getListaById($_SESSION['idlista'], $_SESSION['idusuario']);
     $foto = formatImageB64($lista);

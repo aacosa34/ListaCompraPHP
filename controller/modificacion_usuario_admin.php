@@ -18,7 +18,7 @@ if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
 
     if($user['ROL'] == "Administrador"){
-        if($_SERVER['REQUEST_METHOD'] === 'GET'){
+        if($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['idusuario'])){
             // GET idusuario por primera vez y lo almacenamos en una cookie
             setcookie("idusermod", $_GET['idusuario'], time()+3600);
 
@@ -31,6 +31,9 @@ if(isset($_SESSION['idusuario'])){
             $titulo = 'Modificación administrador usuario: ' . $validacion['NOMBRE'];
             // Ponemos que ya puede ver el estado de su formulario relleno
             $estado_registro = "Modificacion";
+        }
+        else {
+            header("Location: /index.php");
         }
 
         // Obtenemos los campos que han cambiado con el GET

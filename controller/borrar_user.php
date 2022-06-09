@@ -27,12 +27,13 @@ if(isset($_SESSION['idusuario'])){
             $titulo = "Borrado del usuario: " . $validacion['NOMBRE'];
         }
 
-        if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['boton']) && isset($_COOKIE['idusuariodel'])){
+        if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['boton']) && !empty($_COOKIE['idusuariodel'])){
             borrarUsuarioAdmin($_COOKIE['idusuariodel']);
             $estado = "Confirmacion";
             $titulo = "Usuario borrado";
             unset($_COOKIE['idusuariodel']);
         }
+
     }
     else {
         header("Location: /index.php");

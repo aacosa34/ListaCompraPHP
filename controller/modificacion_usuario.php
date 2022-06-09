@@ -46,7 +46,7 @@ if(isset($_SESSION['idusuario'])){
             // No ha establecido foto... Sin embargo seguimos mostrando la vieja
             if ($validacion['errorfoto']){
                 // Almacenamos la foto que tiene actualmente
-                $validacion['foto'] = "data:" . $user['IMGTYPE'] .  ";base64," . base64_encode($user['IMGBINARY']);
+                $validacion['foto'] = formatImageB64($validacion);
             }
         }
         // Validacion correcta, se registra para la vista y previsualizacion

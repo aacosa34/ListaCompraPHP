@@ -11,6 +11,10 @@ session_start();
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
 
+    // Cleanning on bad exit
+    unset($_COOKIE['validado']);
+    unset($_COOKIE['nombrefoto']);
+
     // Verlo todo modo RW sin ser propietario
     $privilegio = Array();
 
