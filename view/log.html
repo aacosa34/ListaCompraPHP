@@ -1,0 +1,33 @@
+{% extends "padre.html" %}
+
+    {% block title %}
+        Log del sistema
+    {% endblock %}
+
+    {% block main %}
+
+    <div class="text-center">
+        <h1 class="fw-bold my-4">Log del sistema</h1>
+        <h4 class="my-4">Contenido del log del sistema:</h4>
+    </div>
+
+    <div class="card shadow mx-5 mt-2 mb-5">
+        <table class="table">
+            <thead class="table-light text-center">
+                <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Descripcion</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+            {% for fila in log %}
+                <tr>
+                    <td>{{fila.FECHA}}</td>
+                    <td>{{fila.DESCRIPCION}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% endblock %}

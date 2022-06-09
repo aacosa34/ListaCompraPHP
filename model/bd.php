@@ -25,6 +25,21 @@ function closeConnection(){
     }
 }
 
+function getLog(){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare("SELECT FECHA,DESCRIPCION FROM LOG");
+    $query->execute();
+    $resultQuery = $query->get_result();
+
+    if($resultQuery->num_rows>0){
+        $log = $resultQuery->fetch_all(MYSQLI_ASSOC);
+    }
+
+    return $log;
+}
+
 function getUserById($idusuario){
     global $conn;
     getConnection();
