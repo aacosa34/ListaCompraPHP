@@ -51,15 +51,16 @@ if(isset($_SESSION['idusuario'])){
 
             if($sinerrores){
                 $estado = 'Confirmar';
-
             }
             else{
-                $estado = 'Crear';
+                $estado = 'Invalido crear';
             }
         }
 
         if($_POST['boton'] == "Confirmar datos"){
             $valores = $_POST;
+            
+            $estado = "Lista modificada";
 
             insertList($valores);
 

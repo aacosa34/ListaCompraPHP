@@ -9,7 +9,7 @@
     <div class="card bg-light my-5">
         <h1 class="card-header bg-dark text-center text-white">{{titulo}}</h1>
         <div class="card-body shadow-lg">
-            {% if estado == "Crear" or estado == "Validado" or estado == "Editar" or estado == "Invalido crear" or estado == "Invalido editar" %}
+        {% if estado == "Crear" or estado == "Validado" or estado == "Confirmar" or estado == "Editar" or estado == "Invalido crear" or estado == "Invalido editar" %}
             <form action="{{formulario}}" method="POST" enctype="multipart/form-data" novalidate>
                 <div class="row">
                     <div class="col align-self-center mb-4 mr-4 ml-4">
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input class="form-control {{valores.errornombre ? 'is-invalid'}}" id="floatingnombre" type="text" name="NOMBRE" placeholder="Escriba el nombre de la lista" value="{{valores.NOMBRE}}" {{estado == 'Validado' ? 'readonly'}}/>
+                    <input class="form-control {{valores.errornombre ? 'is-invalid'}}" id="floatingnombre" type="text" name="NOMBRE" placeholder="Escriba el nombre de la lista" value="{{valores.NOMBRE}}" {{estado == 'Validado' or estado == 'Confirmar' ? 'readonly'}}/>
                     <label for="floatingnombre">Nombre de la lista</label>
                     {% if valores.errornombre is not empty %}
                         <p class="invalid-feedback">{{valores.errornombre}}</p>
@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Descripcion" name="DESCRIPCION" id="floatingTextarea" {{estado == 'Validado' ? 'readonly'}}>{{valores.DESCRIPCION}}</textarea>
+                    <textarea class="form-control" placeholder="Descripcion" name="DESCRIPCION" id="floatingTextarea" {{estado == 'Validado' or estado == 'Confirmar' ? 'readonly'}}>{{valores.DESCRIPCION}}</textarea>
                     <label for="floatingTextarea">Descripción</label>   
                 </div>
 
@@ -42,11 +42,11 @@
                     <input class="btn btn-primary" type="submit" name="boton" value="Crear lista"/>
                 {% elseif estado == 'Editar' or estado == 'Invalido editar' %}
                     <input class="btn btn-primary" type="submit" name="boton" value="Editar lista"/>
-                {% elseif estado == 'Validado' %}
+                {% elseif estado == 'Validado' or estado == 'Confirmar' %}
                     <input class="btn btn-success" type="submit" name="boton" value="Confirmar datos"/>
                 {% endif %}
             </form>
-            {% else %}
+        {% else %}
                 {% if estado != "Lista modificada" %}
                     <p>La lista ha sido creada correctamente.</p>
                 {% else %}

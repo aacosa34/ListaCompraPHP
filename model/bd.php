@@ -29,7 +29,7 @@ function getLog(){
     global $conn;
     getConnection();
 
-    $query = $conn->prepare("SELECT FECHA,DESCRIPCION FROM LOG");
+    $query = $conn->prepare("SELECT FECHA,DESCRIPCION FROM LOG ORDER BY FECHA DESC");
     $query->execute();
     $resultQuery = $query->get_result();
 

@@ -32,9 +32,6 @@ if(isset($_SESSION['idusuario'])){
             // Ponemos que ya puede ver el estado de su formulario relleno
             $estado_registro = "Modificacion";
         }
-        else {
-            header("Location: /index.php");
-        }
 
         // Obtenemos los campos que han cambiado con el GET
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
