@@ -30,6 +30,18 @@
                     <li class="nav-item"><a href="/controller/registrar_admin.php" class="nav-link px-2 text-white">Dar de alta un usuario</a></li>
                     <li class="nav-item"><a href="/controller/usuarios.php" class="nav-link px-2 text-white">Lista de usuarios</a></li>
                     <li class="nav-item"><a href="/controller/log.php" class="nav-link px-2 text-white">Ver log</a></li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Operaciones BBDD
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><a class="dropdown-item" href="">Borrado completo</a></li>
+                            <li><a class="dropdown-item" href="">Copia de seguridad</a></li>
+                            <li><a class="dropdown-item" href="/controller/restore.php?restaurar=true">Restaurar</a></li>
+                        </ul>
+                    </li>
+                    
                 {% endif %}
                 </ul>
                 <div class="text-end">
@@ -40,6 +52,7 @@
                     <form action="/controller/logout.php" method="POST">
                         <input class="btn btn-outline-danger mt-2" type="submit" value="Cerrar sesión" name="sesion" role="button">
                     </form>
+                    
                 {% endif %}
                 </div>
             </div>
@@ -52,9 +65,7 @@
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container">
             <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Inicio</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Mis listas</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Modificar mis datos</a></li>
+                <li class="nav-item"><a href="/documentacion.pdf" class="nav-link px-2 text-muted">Click aquí para ir a la documentación</a></li>
             </ul>
             <p class="text-center text-muted">&copy; 2022 Pedro Antonio Mayorgas Parejo / Adrián Acosa Sánchez</p>
         </div>

@@ -2,20 +2,17 @@
 
 $conn = NULL;
 
-// function restartDB(){
-//     $rootconn;
-
-// }
-
 function getConnection(){
     global $conn;
 
     if ($conn == NULL){
-        $conn = new mysqli("127.0.0.1", "adminlistacompra", "password", "LISTACOMPRA");
+        $conn = new mysqli("127.0.0.1", "adrianpedro2122", "W1F7SMzT", "adrianpedro2122");
         if ($conn->connect_errno) {
           echo ("Fallo al conectar: " . $conn->connect_error);
         }
       }
+
+    return $conn;
 }
 
 function closeConnection(){
@@ -24,6 +21,89 @@ function closeConnection(){
         $conn -> close();
     }
 }
+
+/* Backup de la BBDD completa */
+function DB_backup() {
+    global $conn;
+    getConnection();
+    // Obtener listado de tablas
+    $tablas = array();
+    $result = mysqli_query($conn,'SHOW TABLES');
+    while ($row = mysqli_fetch_row($result))
+      $tablas[] = $row[0];
+    
+    // Salvar cada tabla
+    $salida = '';
+    foreach ($tablas as $tab) {
+        $result = mysqli_query($conn,'SELECT * FROM '.$tab);
+        $num = mysqli_num_fields($result);
+        
+        $salida .= 'DROP TABLE IF EXISTS '.$tab.';';
+        $row2 = mysqli_fetch_row(mysqli_query($conn,'SHOW CREATE TABLE '.$tab));
+        $salida .= "\n\n".$row2[1].";\n\n";
+        
+        while ($row = mysqli_fetch_row($result)) {
+            $salida .= 'INSERT INTO '.$tab.' VALUES(';
+            for ($j=0; $j < $num; $j++) {
+                if (!is_null($row[$j])) {
+                    $row[$j] = addslashes($row[$j]);
+                    $row[$j] = preg_replace("/\n/","\\n",$row[$j]);
+                    if (isset($row[$j]))
+                        $salida .= '"'.$row[$j].'"';
+                    else
+                        $salida .= '""';
+                } else
+                    $salida .= 'NULL';
+                if ($j < ($num-1))
+                    $salida .= ',';
+            }
+            $salida .= ");\n";
+        }
+        $salida .= "\n\n\n";
+    }
+    closeConnection();
+    return $salida;
+    //save file
+    //$f = fopen('conn-backup-'.time().'-'.(md5(implode(',',$tablas))).'.sql','w+');
+    //fwrite($f,$salida);
+    //fclose($f);
+}
+
+/* Restauración de la BBDD completa */
+function DB_restore($f) {
+    global $conn;
+    getConnection();
+
+    mysqli_query($conn,'SET FOREIGN_KEY_CHECKS=0');
+    DB_delete($conn);
+    $conn->autocommit(TRUE);
+    $error = [];
+    $sql = file_get_contents($f);
+    $queries = explode(';',$sql);
+    foreach ($queries as $q) {
+        $q = trim($q);
+        if ($q!='' and !mysqli_query($conn,$q))
+            $error .= mysqli_error($conn);
+        
+    }
+    mysqli_commit($conn);
+    mysqli_query($conn,'SET FOREIGN_KEY_CHECKS=1');
+
+    closeConnection();
+    return $error;
+}
+
+/* Borrar el contenido de las tablas de la BBDD */
+function DB_delete($conn) {
+    $result = mysqli_query($conn,'SHOW TABLES');
+    while ($row = mysqli_fetch_row($result)){
+        mysqli_query($conn,'DELETE FROM '.$row[0]); 
+        mysqli_query($conn,'ALTER TABLE '.$row[0].' AUTO_INCREMENT=1'); 
+    }
+          
+    mysqli_commit($conn);
+  }
+
 
 function getLog(){
     global $conn;
@@ -214,8 +294,8 @@ function borrarProductoById($idproducto, $idlista){
     global $conn;
     getConnection();
 
-    $query = $conn->prepare("DELETE FROM LISTAPRODUCTOS WHERE IDPRODUCTO=?");
-    $query->bind_param('i', $idproducto);
+    $query = $conn->prepare("DELETE FROM LISTAPRODUCTOS WHERE IDPRODUCTO=? AND IDLISTA=?");
+    $query->bind_param('ii', $idproducto, $idlista);
     $query->execute();
 
     if($query->affected_rows != 1){
@@ -274,7 +354,20 @@ function marcarProductoComprado($nombre, $cantidad){
 
     if($query->affected_rows != 1){
         echo "Error en la insercion en el historico de productos";
+    }else{
+        $mensaje_log = "Comprado producto ".$nombre;
+
+        $query = $conn->prepare("INSERT INTO LOG (FECHA,DESCRIPCION) VALUES (NOW(),?)");
+        $query->bind_param('s', $mensaje_log);
+        $query->execute();
+
+        if($query->affected_rows != 1){
+            echo "Error en la insercion en el historico de productos";
+        }
     }
+
+    
+
 
 }
 
