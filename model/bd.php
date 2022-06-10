@@ -22,6 +22,12 @@ function closeConnection(){
     }
 }
 
+function closeConn($con){
+    if($con != NULL){
+        $con->close();
+    }
+}
+
 /* Backup de la BBDD completa */
 function DB_backup() {
     global $conn;
@@ -61,12 +67,14 @@ function DB_backup() {
         }
         $salida .= "\n\n\n";
     }
+
+    //save file
+    $f = fopen('../bd/backup/conn-backup-'.time().'-'.(md5(implode(',',$tablas))).'.sql','w+');
+    fwrite($f,$salida);
+    fclose($f);
     closeConnection();
     return $salida;
-    //save file
-    //$f = fopen('conn-backup-'.time().'-'.(md5(implode(',',$tablas))).'.sql','w+');
-    //fwrite($f,$salida);
-    //fclose($f);
+
 }
 
 /* Restauración de la BBDD completa */
@@ -102,7 +110,27 @@ function DB_delete($conn) {
     }
           
     mysqli_commit($conn);
-  }
+}
+
+function DB_borrar() {
+    global $conn;
+
+    getConnection();
+    $result = mysqli_query($conn,'SHOW TABLES');
+
+    while ($row = mysqli_fetch_row($result)){
+        if($row[0] === 'USUARIOS'){
+            mysqli_query($conn,'DELETE FROM '.$row[0].' WHERE IDUSUARIO!=1'); 
+        }else{
+            mysqli_query($conn,'DELETE FROM '.$row[0]);  
+        }
+        
+        mysqli_query($conn,'ALTER TABLE '.$row[0].' AUTO_INCREMENT=1'); 
+    }
+          
+    mysqli_commit($conn);
+    closeConnection();
+}
 
 
 function getLog(){
