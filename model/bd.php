@@ -41,7 +41,16 @@ function DB_backup() {
     // Salvar cada tabla
     $salida = '';
     foreach ($tablas as $tab) {
-        $result = mysqli_query($conn,'SELECT * FROM '.$tab);
+        if ($tab == 'USUARIOS'){
+            $result = mysqli_query($conn,'SELECT IDUSUARIO, DNI, NOMBRE, APELLIDOS, TELEFONO, EMAIL, PASSWORD, FNAC, SEXO, ROL, ESTADO, IMGTYPE, TO_BASE64(IMGBINARY), LASTLOGIN  FROM '.$tab);
+        }
+        else if ($tab == 'LISTA') {
+            $result = mysqli_query($conn,'SELECT IDLISTA, IDPROPIETARIO, NOMBRE, DESCRIPCION, FECHA, IMGTYPE, TO_BASE64(IMGBINARY) FROM '.$tab);
+        }
+        else {
+            $result = mysqli_query($conn,'SELECT * FROM '.$tab);
+        }
+
         $num = mysqli_num_fields($result);
         
         $salida .= 'DROP TABLE IF EXISTS '.$tab.';';
@@ -50,14 +59,27 @@ function DB_backup() {
         
         while ($row = mysqli_fetch_row($result)) {
             $salida .= 'INSERT INTO '.$tab.' VALUES(';
+            // Recorre las columnas
             for ($j=0; $j < $num; $j++) {
                 if (!is_null($row[$j])) {
-                    $row[$j] = addslashes($row[$j]);
-                    $row[$j] = preg_replace("/\n/","\\n",$row[$j]);
-                    if (isset($row[$j]))
-                        $salida .= '"'.$row[$j].'"';
-                    else
+                    if (isset($row[$j])){
+                        if ($j == $num - 2 && $tab == 'USUARIOS'){
+                            $salida .= 'FROM_BASE64("'.$row[$j].'")';
+                        }
+                        else if($j == $num - 1 && $tab == 'LISTA'){
+                            $salida .= 'FROM_BASE64("'.$row[$j].'")';
+                        }   
+                        else {
+                            $row[$j] = addslashes($row[$j]);
+                            $row[$j] = preg_replace("/\n/","\\n",$row[$j]);
+        
+                            $salida .= '"'.$row[$j].'"';
+
+                        }
+                    }
+                    else {
                         $salida .= '""';
+                    }   
                 } else
                     $salida .= 'NULL';
                 if ($j < ($num-1))
@@ -74,7 +96,6 @@ function DB_backup() {
     fclose($f);
     closeConnection();
     return $salida;
-
 }
 
 /* Restauración de la BBDD completa */
@@ -96,6 +117,17 @@ function DB_restore($f) {
     }
     mysqli_commit($conn);
     mysqli_query($conn,'SET FOREIGN_KEY_CHECKS=1');
+
+    // Restauramos los trigers
+
+    $sql = file_get_contents("../bd/triggers_copy.sql");
+    $queries = explode('//',$sql);
+    foreach ($queries as $q) {
+        $q = trim($q);
+        if ($q!='' and !mysqli_query($conn,$q))
+            $error .= mysqli_error($conn);
+        
+    }
 
     closeConnection();
     return $error;
@@ -265,6 +297,16 @@ function comprobarLogin($email, $password){
         return '';
     }
 
+}
+
+function actualizarSesion($idusuario){
+    global $conn;
+    getConnection();
+
+    $query = $conn->prepare('UPDATE USUARIOS SET LASTLOGIN = NOW() WHERE IDUSUARIO=?');
+    $query->bind_param('i', $idusuario);
+    $query-> execute();
+    
 }
 
 function getListaById($idlista, $idusuario){
@@ -968,7 +1010,6 @@ function insertList($valores){
 }
 
 function checkLista($validacion, $foto){
-     // Adrian te voy a matar, no dejes sin fijar variables
      $validacion['sinerrores'] = true;
 
      if(empty($foto) || !checkValidImage($foto)){
@@ -1164,7 +1205,6 @@ function activateUser($idusuario){
 
 
 function checkFormulario($validacion, $foto){
-    // Adrian te voy a matar, no dejes sin fijar variables
     $validacion['sinerrores'] = true;
 
         if(empty($foto) || !checkValidImage($foto)){

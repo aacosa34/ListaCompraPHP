@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Email o contraseña incorrectos';
     }else{
         session_start();
+
+        actualizarSesion($usuario['IDUSUARIO']);
         
         $_SESSION['idusuario'] = $usuario['IDUSUARIO'];
 
