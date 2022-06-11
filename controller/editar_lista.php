@@ -10,7 +10,7 @@ session_start();
 
 $titulo = "Editar lista";
 
-$formulario = "/controller/editar_lista.php";
+$formulario = "/~adrianpedro2122/proyecto/controller/editar_lista.php";
 
 if(isset($_SESSION['idusuario']) && isset($_SESSION['idlista'])){
     $user = getUserById($_SESSION['idusuario']);
@@ -66,7 +66,7 @@ if(isset($_SESSION['idusuario']) && isset($_SESSION['idlista'])){
 // NO
 
 echo $twig->render('crearlista_form.html', [ 'user' => $user,
-                                         'valores' => $validacion,
-                                         'estado' => $estado_registro])
+                                            'valores' => $validacion,
+                                            'estado' => $estado_registro])
 
 ?>

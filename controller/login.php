@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $_SESSION['idusuario'] = $usuario['IDUSUARIO'];
 
-        header("Location: /index.php");
+        header("Location: /~adrianpedro2122/proyecto//index.php");
     }
 }
 

@@ -26,6 +26,8 @@ if(isset($_SESSION['idusuario']) && isset($_SESSION['idlista'])){
         $productos = getProductosLista($_SESSION['idlista']);
         $usuarios_compartidos = getUsersOnList($lista['IDLISTA']);
     }
+
+    header('Location: /~adrianpedro2122/proyecto/controller/vista_lista.php?idlista='.$_SESSION['idlista']);
 }
 
 echo $twig->render('vista_lista.html',[ 'user' => $user,

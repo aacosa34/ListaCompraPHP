@@ -6,9 +6,9 @@ function getConnection(){
     global $conn;
 
     if ($conn == NULL){
-        $conn = new mysqli("127.0.0.1", "adrianpedro2122", "W1F7SMzT", "adrianpedro2122");
-        if ($conn->connect_errno) {
-          echo ("Fallo al conectar: " . $conn->connect_error);
+        $conn = new mysqli("localhost", "adrianpedro2122", "W1F7SMzT", "adrianpedro2122");
+        if ($conn->connect_error) {
+            die('Error de conexión: ' . $conn->connect_error);
         }
       }
 
@@ -91,7 +91,7 @@ function DB_backup() {
     }
 
     //save file
-    $f = fopen('../bd/backup/conn-backup-'.time().'-'.(md5(implode(',',$tablas))).'.sql','w+');
+    $f = fopen('/~adrianpedro2122/proyecto/bd/backup/conn-backup-'.time().'-'.(md5(implode(',',$tablas))).'.sql','w+');
     fwrite($f,$salida);
     fclose($f);
     closeConnection();
@@ -99,9 +99,56 @@ function DB_backup() {
 }
 
 /* Restauración de la BBDD completa */
+function DB_init() {
+    global $conn;
+    getConnection();
+    $error = "";
+    $show = mysqli_query($conn, 'SHOW TABLES');
+
+    if($show -> num_rows == 0){
+        $conn->autocommit(TRUE);
+
+        // Restauramos los trigers
+        $sql = file_get_contents("./bd/reset.sql");
+        $queries = explode(';',$sql);
+        foreach ($queries as $q) {
+            $q = trim($q);
+            if ($q!='' and !mysqli_query($conn,$q)){
+                $error .= mysqli_error($conn);
+            }
+        }
+        // Restauramos los trigers
+    
+        $sql = file_get_contents("./bd/triggers.sql");
+        $queries = explode('//',$sql);
+        foreach ($queries as $q) {
+            $q = trim($q);
+            if ($q!='' and !mysqli_query($conn,$q))
+                $error .= mysqli_error($conn);
+            
+        }
+
+        // Restauramos los datos por defecto
+        mysqli_query($conn,'SET FOREIGN_KEY_CHECKS=0');
+        $sql = file_get_contents("./bd/basicdata.sql");
+        $queries = explode(';',$sql);
+        foreach ($queries as $q) {
+            $q = trim($q);
+            if ($q!='' and !mysqli_query($conn,$q))
+                $error .= mysqli_error($conn);    
+        }        
+    }    
+
+    return $error;
+}
+
+
+/* Restauración de la BBDD completa */
 function DB_restore($f) {
     global $conn;
     getConnection();
+    $error = "";
+
 
     mysqli_query($conn,'SET FOREIGN_KEY_CHECKS=0');
     DB_delete($conn);
@@ -120,7 +167,7 @@ function DB_restore($f) {
 
     // Restauramos los trigers
 
-    $sql = file_get_contents("../bd/triggers_copy.sql");
+    $sql = file_get_contents("../bd/triggers.sql");
     $queries = explode('//',$sql);
     foreach ($queries as $q) {
         $q = trim($q);
@@ -248,6 +295,7 @@ function addUserToList($idusuario, $privilegios, $idlista){
 function getEstadisticas(){
     global $conn;
     getConnection();
+    $estadisticas = '';
 
     $query = $conn->prepare("SELECT NOMBRE, CANTIDAD FROM HISTORICO");
     $query->execute();
@@ -263,6 +311,7 @@ function getEstadisticas(){
 function getProductosComprados(){
     global $conn;
     getConnection();
+    $historico_productos = '';
 
     $query = $conn->prepare("SELECT NOMBRE,CANTIDAD FROM HISTORICOPRODUCTOS");
     $query->execute();
@@ -345,6 +394,7 @@ function borrarLista($idlista){
 function getProductosLista($idlista){
     global $conn;
     getConnection();
+    $productos = '';
 
     $query = $conn->prepare("SELECT P.NOMBRE,LP.CANTIDAD,LP.IDPRODUCTO FROM LISTAPRODUCTOS AS LP INNER JOIN PRODUCTOS AS P ON P.IDPRODUCTO=LP.IDPRODUCTO WHERE LP.IDLISTA=?");
     $query->bind_param('i', $idlista);
@@ -520,6 +570,7 @@ function getSizeOfListas($idusuario){
 function getListasAlphabeticOrder($idusuario, $privilegio, $pagina){
     global $conn;
     getConnection();
+    $listas = '';
 
     $offset = 3;
     $minimo = 0;
@@ -587,6 +638,7 @@ function getSizeOfListasAlphabeticOrder($idusuario, $privilegio){
 function getListasAlphabeticOrderSearch($idusuario, $privilegio, $text, $pagina){
     global $conn;
     getConnection();
+    $listas = '';
 
     $text = "%" . $text . "%";
     $offset = 3;
@@ -655,6 +707,7 @@ function getSizeOfListasAlphabeticOrderSearch($idusuario, $privilegio, $text){
 function getListasDateOrder($idusuario, $privilegio, $pagina){
     global $conn;
     getConnection();
+    $listas = '';
 
     $offset = 3;
     $minimo = 0;
@@ -717,6 +770,7 @@ function getSizeOfListasDateOrder($idusuario, $privilegio){
 function getListasDateOrderSearch($idusuario, $privilegio, $text, $pagina){
     global $conn;
     getConnection();
+    $listas = '';
 
     $text = "%" . $text . "%";
     $offset = 3;
@@ -784,6 +838,7 @@ function getSizeOfListasDateOrderSearch($idusuario, $privilegio, $text){
 function getUserList(){
     global $conn;
     getConnection();
+    $usuarios = '';
 
     $query = $conn->prepare("SELECT * FROM USUARIOS");
     $query->execute();

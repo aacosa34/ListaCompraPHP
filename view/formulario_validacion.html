@@ -20,7 +20,7 @@
                     {% endif %}
                     </div>
                     <div class="col mb-4 ml-4 text-center">
-                        <img src="{{valores.foto ? valores.foto : '/assets/usuario.png'}}" class="rounded flex-shrink-0" witdh="256" height="256" alt="Imagen usuario por defecto"/>
+                        <img src="{{valores.foto ? valores.foto : '/~adrianpedro2122/proyecto/assets/usuario.png'}}" class="rounded flex-shrink-0" witdh="256" height="256" alt="Imagen usuario por defecto"/>
                     </div>
                 </div>
 
@@ -119,23 +119,23 @@
                 <input class="btn btn-primary" type="submit" name="boton" value="Activar e informar"/>
                 <input class="btn btn-warning" type="submit" name="boton" value="Informar de error"/>
                 <input class="btn btn-danger" type="submit" name="boton" value="Borrar usuario"/>
-                <a class="btn btn-info" href="/controller/usuarios.php">Volver a la lista de usuarios</a>
+                <a class="btn btn-info" href="/~adrianpedro2122/proyecto/controller/usuarios.php">Volver a la lista de usuarios</a>
 
             </form>
 
         {% elseif estado == "Activar"  %}
-            <p>El usuario D/Da. {{valores.NOMBRE}} {{valores.APELLIDOS}} ha sido activado en el sistema correctamente.</p>
-            <a class="btn btn-primary" href="/index.php">Volver a inicio</a>
+            <p>El usuario ha sido activado en el sistema correctamente.</p>
+            <a class="btn btn-primary" href="/~adrianpedro2122/proyecto/index.php">Volver a inicio</a>
         {% elseif estado == "Borrar" %}
             <p>Se ha borrado el usuario correctamente</p>
-            <a class="btn btn-primary" href="/index.php">Volver a inicio</a>
+            <a class="btn btn-primary" href="/~adrianpedro2122/proyecto/index.php">Volver a inicio</a>
         {% elseif estado == "Informar" %}
             <div class="form-floating">
                 <textarea class="form-control" placeholder="Escriba un comentario" id="floatingTextarea2"></textarea>
                 <label for="floatingTextarea2">Informe de error a usuario: {{ valores.NOMBRE }}</label>
             </div>
 
-            <a class="btn btn-primary my-3" href="/index.php">Confirmar y volver a inicio</a>
+            <a class="btn btn-primary my-3" href="/~adrianpedro2122/proyecto/index.php">Confirmar y volver a inicio</a>
           </div>
         {% endif %}
 

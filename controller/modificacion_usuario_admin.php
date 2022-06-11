@@ -7,8 +7,8 @@ $twig = new \Twig\Environment($loader);
 
 session_start();
 
-$formulario = '/controller/modificacion_usuario_admin.php';
-$estado_registro = "";
+$formulario = '/~adrianpedro2122/proyecto/controller/modificacion_usuario_admin.php';
+$estado_registro = $fecha_nac = "";
 $validado = 0;
 
 $titulo = "Modificar mis datos";
@@ -75,11 +75,11 @@ if(isset($_SESSION['idusuario'])){
         }
     }
     else {
-        header("Location: /index.php");
+        header("Location: /~adrianpedro2122/proyecto/index.php");
     }
 }
 else{
-    header("Location: /index.php");
+    header("Location: /~adrianpedro2122/proyecto/index.php");
 }
 /**
   * Variables de control

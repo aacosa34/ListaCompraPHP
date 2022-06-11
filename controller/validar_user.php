@@ -7,9 +7,10 @@ $twig = new \Twig\Environment($loader);
 
 session_start();
 
-$formulario = '/controller/validar_user.php';
+$formulario = '/~adrianpedro2122/proyecto/controller/validar_user.php';
 $titulo = 'Validar usuario';
 $estado_registro = "Visionado";
+$valores = $fecha_nac = '';
 
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
@@ -52,7 +53,7 @@ if(isset($_SESSION['idusuario'])){
         }
     }
     else{
-        header("Location: /index.php");
+        header("Location: /~adrianpedro2122/proyecto/index.php");
     }
 }
 /**

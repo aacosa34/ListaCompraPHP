@@ -7,7 +7,7 @@ $twig = new \Twig\Environment($loader);
 
 session_start();
 
-$formulario = "/controller/borrar_colaborador.php";
+$formulario = "/~adrianpedro2122/proyecto/controller/borrar_colaborador.php";
 $titulo = "Borrar colaborador";
 
 if(isset($_SESSION['idusuario']) && isset($_SESSION['idlista'])){

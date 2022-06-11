@@ -15,21 +15,20 @@ setcookie("validado", 0, time()+3600);
 $user = $formulario = ''; // Para que exista la variable unicamente
 $titulo = 'Solicitar registro';
 $estado_registro = "";
+$validacion = '';
 
 // Comprobamos que sea un usuario real, necesario tambien para el panel
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
-
-    setcookie("rol", $user['ROL'], time()+3600);
 }
 else {
-    header("Location: /index.php");
+    header("Location: /~adrianpedro2122/proyecto/index.php");
 }
 
 // Verificamos que sea Administrador dicho usuario
-if(isset($_COOKIE['rol']) && $_COOKIE['rol'] == 'Administrador'){
+if(isset($user['ROL']) && $user['ROL'] == 'Administrador'){
     // Registramos el formulario que ira en el action
-    $formulario = '/controller/registrar_admin.php';
+    $formulario = '/~adrianpedro2122/proyecto/controller/registrar_admin.php';
     // Registramos que puede ver el formulario
     $estado_registro = "Sin registro";
 
@@ -56,17 +55,16 @@ if(isset($_COOKIE['rol']) && $_COOKIE['rol'] == 'Administrador'){
         else if (!empty($validacion) && $validacion['boton'] == "Confirmar" && $_COOKIE['validado'] == 1){
             $titulo = 'Registro finalizado';
             // Le pasamos la cookie del rol para que la BD se inserte con los datos indicados por el administrador
-            insertUser($validacion, $_COOKIE['rol']);
+            insertUser($validacion, $user['ROL']);
             $estado_registro = "Registrada Admin";
             unset($_COOKIE['validado']);
             unset($_COOKIE['nombrefoto']);
-            unset($_COOKIE['rol']);
         }
     }
 }
 else {
     // Es un usuario estandar que hace aqui
-    header("Location: /index.php");
+    header("Location: /~adrianpedro2122/proyecto/index.php");
 }
 
 echo $twig->render('formulario_registro.html', [ 'valores' => $validacion,

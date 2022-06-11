@@ -10,7 +10,7 @@ session_start();
 
 $titulo = "Crear lista";
 
-$formulario = "/controller/crear_lista.php";
+$formulario = "/~adrianpedro2122/proyecto/controller/crear_lista.php";
 
 $valores = '';
 

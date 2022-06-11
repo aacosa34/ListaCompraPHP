@@ -14,7 +14,7 @@ if(isset($_SESSION['idusuario'])){
         $_SESSION['idlista'] = $_GET['idlista']; // Guardamos el id de la lista en la sesion
     }
     else if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-        header("Location: /controller/listas.php");
+        header("Location: /~adrianpedro2122/proyecto/controller/listas.php");
     }
     $lista = getListaById($_SESSION['idlista'], $_SESSION['idusuario']);
     $foto = formatImageB64($lista);

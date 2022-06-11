@@ -18,6 +18,8 @@ if(isset($_SESSION['idusuario'])){
     // Verlo todo modo RW sin ser propietario
     $privilegio = Array();
 
+    $listasUser = Array();
+
     // Filtro de listas
     if($_SERVER['REQUEST_METHOD'] == "GET"){
         if(!empty($_GET["propietario"])){
@@ -44,7 +46,7 @@ if(isset($_SESSION['idusuario'])){
             $pag_actual = $_GET['pagina'];
         }
 
-        if ($_GET["orden"] == "alfabeto" && empty($_GET["texto"])){
+        if (isset($_GET['orden']) && $_GET["orden"] == "alfabeto" && empty($_GET["texto"])){
             $ultima_pag = ceil(getSizeOfListasAlphabeticOrder($_SESSION['idusuario'], $privilegio) / $offset);
 
             if($pag_actual > $ultima_pag){
@@ -57,7 +59,7 @@ if(isset($_SESSION['idusuario'])){
 
             $listasUser = getListasAlphabeticOrder($_SESSION['idusuario'], $privilegio, $pag_actual);
         }
-        else if ($_GET["orden"] == "alfabeto" && !empty($_GET["texto"])){
+        else if (isset($_GET['orden']) && $_GET["orden"] == "alfabeto" && !empty($_GET["texto"])){
             $ultima_pag = ceil(getSizeOfListasAlphabeticOrderSearch($_SESSION['idusuario'], $privilegio, $_GET["texto"]) / $offset);
 
             if($pag_actual > $ultima_pag){
@@ -70,7 +72,7 @@ if(isset($_SESSION['idusuario'])){
 
             $listasUser = getListasAlphabeticOrderSearch($_SESSION['idusuario'], $privilegio, $_GET["texto"], $pag_actual);
         }
-        else if ($_GET["orden"] == "fecha" && empty($_GET["texto"])){
+        else if (isset($_GET['orden']) && $_GET["orden"] == "fecha" && empty($_GET["texto"])){
             $ultima_pag = ceil(getSizeOfListasDateOrder($_SESSION['idusuario'], $privilegio) / $offset);
 
             if($pag_actual > $ultima_pag){
@@ -83,7 +85,7 @@ if(isset($_SESSION['idusuario'])){
 
             $listasUser = getListasDateOrder($_SESSION['idusuario'], $privilegio, $pag_actual);
         }
-        else if ($_GET["orden"] == "fecha" && !empty($_GET["texto"])){
+        else if (isset($_GET['orden']) && $_GET["orden"] == "fecha" && !empty($_GET["texto"])){
             $ultima_pag = ceil(getSizeOfListasDateOrderSearch($_SESSION['idusuario'], $privilegio, $_GET["texto"]) / $offset);
 
             if($pag_actual > $ultima_pag){
@@ -112,26 +114,26 @@ if(isset($_SESSION['idusuario'])){
         }
     }
 
-
-    foreach($listasUser as $row){
-        if($row['IMGBINARY'] != NULL){
-            $img[] = 'data: ' . $row['IMGTYPE'] . ';base64,' . base64_encode($row['IMGBINARY']);
-        }
-        else{
-            $img[] = '/assets/noimage.png';
+    $img = Array();
+    
+    if(!empty($listasUser)){
+        foreach($listasUser as $row){
+            if($row['IMGBINARY'] != NULL){
+                $img[] = 'data: ' . $row['IMGTYPE'] . ';base64,' . base64_encode($row['IMGBINARY']);
+            }
+            else{
+                $img[] = '/~adrianpedro2122/proyecto/assets/noimage.png';
+            }
         }
     }
 
 
+
 }
 else{
-    header("Location: /index.php");
+    header("Location: /~adrianpedro2122/proyecto/index.php");
 }
 
-// echo $twig->render('listas.html', ['listas'  => $listasUser,
-//                                    'src'     => $img,
-//                                    'filtros' => $_GET,
-//                                    'user'    => $user]);
 echo $twig->render('listas.html', ['listas'  => $listasUser,
                                    'src'     => $img,
                                    'filtros' => $_GET,

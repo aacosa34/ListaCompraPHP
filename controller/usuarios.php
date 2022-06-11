@@ -40,17 +40,15 @@ if(isset($_SESSION['idusuario'])){
         $listado_paginado = getUserPage($pag_actual);
     }
     else{
-        header("Location: /index.php");
+        header("Location: /~adrianpedro2122/index.php");
     }
 }
 else{
-    header("Location: /index.php");
+    header("Location: /~adrianpedro2122/proyecto/index.php");
 }
 
 echo $twig->render('usuarios.html', ['listado' => $listado_paginado['pagina'],
                                      'user' => $user,
-                                     'size' => $tamanio,
-                                     'offset' => $offset,
                                      'pagina' => $pag_actual,
                                      'ultima' => $listado_paginado['ultima_pag']]);
 

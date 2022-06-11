@@ -7,7 +7,7 @@ $twig = new \Twig\Environment($loader);
 
 session_start();
 
-$formulario = '/controller/modificacion_usuario.php';
+$formulario = '/~adrianpedro2122/proyecto/controller/modificacion_usuario.php';
 $estado_registro = "";
 $validado = 0;
 
@@ -17,7 +17,7 @@ if(isset($_SESSION['idusuario'])){
 
     if ($user['ROL'] == "Administrador"){
         // Redirigir a modificacion_usuario con su propio id
-        header("Location: /controller/modificacion_usuario_admin.php?idusuario=".$_SESSION['idusuario']);
+        header("Location: /~adrianpedro2122/proyecto/controller/modificacion_usuario_admin.php?idusuario=".$_SESSION['idusuario']);
     }
 
     $fecha_nac = explode("-", $validacion['FNAC']); // Dividir la fecha obtenida de la fila
@@ -75,7 +75,7 @@ if(isset($_SESSION['idusuario'])){
     }
 }
 else{
-    header("Location: /index.php");
+    header("Location: /~adrianpedro2122/proyecto/index.php");
 }
 /**
   * Variables de control

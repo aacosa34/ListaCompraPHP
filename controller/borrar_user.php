@@ -11,10 +11,9 @@ ESTADOS
     Mostrar
     Confirmacion
 */
-$estado="";
-$titulo="";
+$estado = $titulo = $validacion = '';
 
-$formulario = '/controller/borrar_user.php';
+$formulario = '/~adrianpedro2122/proyecto/controller/borrar_user.php';
 // Variable de control del usuario por defecto
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
@@ -36,11 +35,11 @@ if(isset($_SESSION['idusuario'])){
 
     }
     else {
-        header("Location: /index.php");
+        header("Location: /~adrianpedro2122/proyecto/index.php");
     }
 }
 else{
-    header("Location: /index.php");
+    header("Location: /~adrianpedro2122/proyecto/index.php");
 }
 /**
   * Variables de control
