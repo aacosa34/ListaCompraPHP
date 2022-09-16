@@ -17,7 +17,7 @@ $estado_registro = "";
 if(!isset($_SESSION['idusuario'])){
     $visitante = true;
     // Registramos el formulario que ira en el action
-    $formulario = '/~adrianpedro2122/proyecto/controller/registrar_visitante.php';
+    $formulario = '/controller/registrar_visitante.php';
     // Registramos que puede ver el formulario sin informacion
     $estado_registro = "Sin registro";
 
@@ -51,7 +51,7 @@ if(!isset($_SESSION['idusuario'])){
     }
 }
 else if (isset($_SESSION['idusuario'])) { // Es un usuario, que hace aqui
-    header("Location: /~adrianpedro2122/proyecto/index.php");
+    header("Location: /index.php");
 }
 
 echo $twig->render('formulario_registro.html', [ 'valores' => $validacion,

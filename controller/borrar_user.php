@@ -13,7 +13,7 @@ ESTADOS
 */
 $estado = $titulo = $validacion = '';
 
-$formulario = '/~adrianpedro2122/proyecto/controller/borrar_user.php';
+$formulario = '/controller/borrar_user.php';
 // Variable de control del usuario por defecto
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
@@ -35,11 +35,11 @@ if(isset($_SESSION['idusuario'])){
 
     }
     else {
-        header("Location: /~adrianpedro2122/proyecto/index.php");
+        header("Location: /index.php");
     }
 }
 else{
-    header("Location: /~adrianpedro2122/proyecto/index.php");
+    header("Location: /index.php");
 }
 /**
   * Variables de control

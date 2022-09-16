@@ -10,7 +10,7 @@ session_start();
 
 $titulo = "Editar lista";
 
-$formulario = "/~adrianpedro2122/proyecto/controller/editar_lista.php";
+$formulario = "/controller/editar_lista.php";
 
 if(isset($_SESSION['idusuario']) && isset($_SESSION['idlista'])){
     $user = getUserById($_SESSION['idusuario']);

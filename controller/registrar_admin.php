@@ -22,13 +22,13 @@ if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
 }
 else {
-    header("Location: /~adrianpedro2122/proyecto/index.php");
+    header("Location: index.php");
 }
 
 // Verificamos que sea Administrador dicho usuario
 if(isset($user['ROL']) && $user['ROL'] == 'Administrador'){
     // Registramos el formulario que ira en el action
-    $formulario = '/~adrianpedro2122/proyecto/controller/registrar_admin.php';
+    $formulario = '/controller/registrar_admin.php';
     // Registramos que puede ver el formulario
     $estado_registro = "Sin registro";
 
@@ -64,7 +64,7 @@ if(isset($user['ROL']) && $user['ROL'] == 'Administrador'){
 }
 else {
     // Es un usuario estandar que hace aqui
-    header("Location: /~adrianpedro2122/proyecto/index.php");
+    header("Location: /index.php");
 }
 
 echo $twig->render('formulario_registro.html', [ 'valores' => $validacion,

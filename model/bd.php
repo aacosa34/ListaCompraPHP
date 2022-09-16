@@ -91,7 +91,7 @@ function DB_backup() {
     }
 
     //save file
-    $f = fopen('/~adrianpedro2122/proyecto/bd/backup/conn-backup-'.time().'-'.(md5(implode(',',$tablas))).'.sql','w+');
+    $f = fopen('/bd/backup/conn-backup-'.time().'-'.(md5(implode(',',$tablas))).'.sql','w+');
     fwrite($f,$salida);
     fclose($f);
     closeConnection();

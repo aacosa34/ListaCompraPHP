@@ -9,10 +9,10 @@ if(isset($_GET['borrar']) && isset($_SESSION['idusuario'])){
     
     if($user['ROL'] == "Administrador" ){
         DB_borrar();
-        header('Location: /~adrianpedro2122/proyecto/controller/usuarios.php');
+        header('Location: /controller/usuarios.php');
     }
     else{
-        header('Location: /~adrianpedro2122/proyecto/index.php');
+        header('Location: /index.php');
     }
 }
 ?>

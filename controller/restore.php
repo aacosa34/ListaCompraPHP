@@ -8,9 +8,9 @@ if(isset($_GET['restaurar']) && isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);
     if($user['ROL'] == "Administrador" && empty(DB_restore('../bd/basicdata.sql'))){
         
-        header('Location: /~adrianpedro2122/proyecto/controller/usuarios.php');
+        header('Location: /controller/usuarios.php');
     }
     else{
-        header('Location: /~adrianpedro2122/proyecto/index.php');
+        header('Location: /index.php');
     }
 }

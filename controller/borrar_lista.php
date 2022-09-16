@@ -10,7 +10,7 @@ session_start();
 
 $titulo = "Borrar lista";
 
-$formulario = "/~adrianpedro2122/proyecto/controller/borrar_lista.php";
+$formulario = "/controller/borrar_lista.php";
 
 if(isset($_SESSION['idusuario'])){
     $user = getUserById($_SESSION['idusuario']);

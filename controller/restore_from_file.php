@@ -26,7 +26,7 @@ if(isset($_SESSION['idusuario'])){
         }        
     }
     else{
-        header('Location: /~adrianpedro2122/proyecto/index.php');
+        header('Location: /index.php');
     }
 }
 

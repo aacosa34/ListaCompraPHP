@@ -15,7 +15,7 @@ if(isset($_SESSION['idusuario'])){
         $log = getLog();
     }
     else{
-        header("Location: /~adrianpedro2122/proyecto/index.php");
+        header("Location: /index.php");
     }
 }
 

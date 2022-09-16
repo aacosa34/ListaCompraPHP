@@ -20,7 +20,7 @@
             {% if lista.PRIVILEGIOS == "Editor" or lista.PRIVILEGIOS == "Propietario" %}
                 <div class="card shadow bg-light mx-5 my-2">
                     <h4 class="m-4">Añadir producto a la lista:</h4>
-                    <form class="row g-3 mx-4" action="/~adrianpedro2122/proyecto/controller/vista_lista.php" method="POST" novalidate>
+                    <form class="row g-3 mx-4" action="/controller/vista_lista.php" method="POST" novalidate>
                         <div class="col-md-4">
                             <input class="form-control mb-4" type="text" name="nomProducto" id="nomProducto" placeholder="Nombre del producto"/>
                         </div> 
@@ -47,7 +47,7 @@
                         <tbody class="text-center">
                         {% for i in productos %}
                             <tr>
-                                <form action="/~adrianpedro2122/proyecto/controller/vista_lista.php" method="POST" novalidate>
+                                <form action="/controller/vista_lista.php" method="POST" novalidate>
                                     <td><input type="text" name="nombre" class="form-control" value="{{i.NOMBRE|title}}" {{lista.PRIVILEGIOS == "Lector" ? 'readonly'}}/></td>
                                     <td><input type="text" name="cantidad" class="form-control" value="{{i.CANTIDAD}}" {{lista.PRIVILEGIOS == "Lector" ? 'readonly'}}/></td>
                                     
@@ -81,7 +81,7 @@
                                         <td>{{i.NOMBRE}}</td>
                                         {% if lista.PRIVILEGIOS == "Propietario" %}
                                             <td class="text-end">
-                                                <a class="btn btn-sm btn-danger ms-4" href="/~adrianpedro2122/proyecto/controller/borrar_colaborador.php?idusuario={{i.IDUSUARIO}}">Borrar</a>
+                                                <a class="btn btn-sm btn-danger ms-4" href="/controller/borrar_colaborador.php?idusuario={{i.IDUSUARIO}}">Borrar</a>
                                             </td>
                                         {% endif %}
                                     {% endif %}
@@ -90,7 +90,7 @@
                             </tbody>
                         </table>
                         {% if lista.PRIVILEGIOS == "Propietario" %}
-                            <form action="/~adrianpedro2122/proyecto/controller/aniadir_colaborador.php" method="POST" novalidate>
+                            <form action="/controller/aniadir_colaborador.php" method="POST" novalidate>
                                 <div class="row">
                                     <input type="text" class="form-control col mt-4 mx-2" name="email" placeholder="Introduzca email a añadir"/>
                                     <select class="form-select col mt-4 mx-2" name="privilegios">

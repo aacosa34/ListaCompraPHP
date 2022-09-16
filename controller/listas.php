@@ -122,7 +122,7 @@ if(isset($_SESSION['idusuario'])){
                 $img[] = 'data: ' . $row['IMGTYPE'] . ';base64,' . base64_encode($row['IMGBINARY']);
             }
             else{
-                $img[] = '/~adrianpedro2122/proyecto/assets/noimage.png';
+                $img[] = '/assets/noimage.png';
             }
         }
     }
@@ -131,7 +131,7 @@ if(isset($_SESSION['idusuario'])){
 
 }
 else{
-    header("Location: /~adrianpedro2122/proyecto/index.php");
+    header("Location: /index.php");
 }
 
 echo $twig->render('listas.html', ['listas'  => $listasUser,
